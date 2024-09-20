@@ -1,59 +1,22 @@
-
 import React from "react";
 import { notFound } from "next/navigation";
 import ProductHeader from "@/components/header/ProductHeader";
 import Image from "next/image";
-import ProductImage from "@/assets/Product.png";
-import { StaticImageData } from "next/image";
 import RightIcon from "@/components/icon/RightIcon";
 import dynamic from 'next/dynamic';
+import { getProduct } from "../../../lib/products";
 
 const PriceHistoryChart = dynamic(
   () => import("@/containers/PriceHistoryChart"),
   { ssr: false }
 );
 
-
-type Product = {
-  id: number;
-  brand: string;
-  name: string;
-  price: number;
-  image: StaticImageData;
-  material: string;
-  careInstructions: string;
-  madeIn: string;
-  designerColor: string;
-  composition: string;
-};
-
-const allProducts: Product[] = [
-  {
-    id: 1,
-    brand: "Burberry",
-    name: "Phoebe 드로스트링 파우치",
-    price: 878000,
-    image: ProductImage,
-    material: "100% 비스코스",
-    careInstructions: "드라이클리닝",
-    madeIn: "이탈리아",
-    designerColor: "AW24-Black",
-    composition: "84% 폴리아미드, 16% 엘라스테인",
-  },
-  // 다른 상품들도 이와 같은 형식으로 추가해주세요.
-];
-
-async function getProduct(id: string): Promise<Product | undefined> {
-  // 실제 환경에서는 여기서 데이터베이스나 API를 호출합니다.
-  return allProducts.find((p) => p.id === parseInt(id));
-}
-
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: { name_en: string };
 }) {
-  const product = await getProduct(params.id);
+  const product = await getProduct(decodeURIComponent(params.name_en));
 
   if (!product) {
     notFound();
@@ -66,7 +29,7 @@ export default async function ProductDetailPage({
         <div className="bg-gray-100">
           <div className="relative w-[60%] pt-[60%] mx-auto">
             <Image
-              src={product.image}
+              src={product.image_url}
               alt={product.name}
               fill
               style={{ objectFit: "contain" }}
@@ -75,14 +38,14 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="px-4 py-6">
-          <h2 className="text-base text-gray-600 mb-1">{product.brand}</h2>
+          <h2 className="text-base text-gray-600 mb-1">{product.brands.name_ko}</h2>
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
           <div className="flex items-center gap-2">
             <p className="text-sm bg-[#EDFEEE] text-primary font-bold p-1 rounded-lg">
               최저가
             </p>
             <p className="text-lg font-bold">
-              {product.price.toLocaleString()}원
+              {product.lowest_price?.toLocaleString()}원
             </p>
           </div>
         </div>
@@ -101,19 +64,19 @@ export default async function ProductDetailPage({
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">관리방법</span>
-              <span>{product.careInstructions}</span>
+              <span>{product.care_instructions}</span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">제조국</span>
-              <span>{product.madeIn}</span>
+              <span>{product.country_of_origin}</span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">디자이너 컬러명</span>
-              <span>{product.designerColor}</span>
+              <span>{product.designer_color}</span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">안감</span>
-              <span>{product.composition}</span>
+              <span>{product.lining}</span>
             </div>
           </div>
         </div>
@@ -173,7 +136,7 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white">
+      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white max-w-[500px] mx-auto">
         <button className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg">
           구매하러 가기
         </button>

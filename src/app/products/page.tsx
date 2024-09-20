@@ -1,91 +1,112 @@
-"use client";
-
-import React from 'react';
-import ProductCard from '@/components/ProductCard';
-import ProductListHeader from '@/components/header/ProductListHeader';
+import React from "react";
+import ProductListHeader from "@/components/header/ProductListHeader";
+import {
+  getMainCategories,
+  getSubCategories,
+  getProductsByCategory,
+} from "@/lib/categories";
+import { TabGroup } from "@/components/TabGroup";
 import { StaticImageData } from "next/image";
-import { Tab } from '@headlessui/react';
 
-// 이미지 import
-import BurberryPouch from "@/assets/Product.png";
-import BottegaShoulder from "@/assets/Product.png";
-import LoeweBasket from "@/assets/Product.png";
-
-const categories = ["전체", "클러치", "숄더백", "크로스백", "토트백", "트래블"];
-
-type Product = {
-  id: number;
-  brand: string;
+interface MainCategory {
+  id: string;
   name: string;
+  created_at: string;
+}
+
+interface SubCategory {
+  id: string;
+  main_category_id: string;
+  name: string;
+  created_at: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  name_en: string;
   price: number;
   image: StaticImageData;
   store: string;
-};
+}
 
-const products: Product[] = [
-  {
-    id: 1,
-    brand: "Burberry",
-    name: "Phoebe 드로스트링 파우치",
-    price: 878000,
-    image: BurberryPouch,
-    store: "MYTHERESA",
-  },
-  {
-    id: 2,
-    brand: "Bottega Veneta",
-    name: "Cassette 레더 숄더 백",
-    price: 4354000,
-    image: BottegaShoulder,
-    store: "MYTHERESA",
-  },
-  {
-    id: 3,
-    brand: "Loewe",
-    name: "Paula's Ibiza Anagram 스몰바스켓백",
-    price: 1203000,
-    image: LoeweBasket,
-    store: "MYTHERESA",
-  },
-];
+function validateAndTransformImageUrl(
+  url: string | StaticImageData
+): StaticImageData {
+  if (typeof url !== "string") {
+    return url;
+  }
 
-export default function ProductListPage() {
-  const categoryName = "가방";
+  const allowedDomains = ["gvzpgksrsvrwzawlqdzz.supabase.co"];
+  try {
+    const imageUrl = new URL(url);
+    if (allowedDomains.includes(imageUrl.hostname)) {
+      return { src: url, height: 300, width: 300 };
+    } else {
+      return { src: "/path/to/placeholder-image.jpg", height: 300, width: 300 };
+    }
+  } catch {
+    return { src: "/path/to/placeholder-image.jpg", height: 300, width: 300 };
+  }
+}
+
+async function fetchData(categoryId: string): Promise<{
+  mainCategory: MainCategory;
+  subCategories: SubCategory[];
+  selectedSubCategory: SubCategory;
+  products: Product[];
+}> {
+  const mainCategories: MainCategory[] = await getMainCategories();
+  const selectedMainCategory =
+    mainCategories.find((cat) => cat.id === categoryId) || mainCategories[0];
+
+  if (!selectedMainCategory) {
+    throw new Error("Main category not found");
+  }
+
+  const subCategories: SubCategory[] = await getSubCategories(
+    selectedMainCategory.id
+  );
+
+  if (subCategories.length === 0) {
+    throw new Error("No subcategories found for the selected main category");
+  }
+
+  const selectedSubCategory = subCategories[0];
+  const rawProducts: Product[] = await getProductsByCategory(
+    selectedSubCategory.id
+  );
+
+  const products = rawProducts.map((product) => ({
+    ...product,
+    image: validateAndTransformImageUrl(product.image),
+  }));
+
+  return {
+    mainCategory: selectedMainCategory,
+    subCategories,
+    selectedSubCategory,
+    products,
+  };
+}
+
+export default async function ProductListPage({
+  params,
+}: {
+  params: { categoryId: string };
+}) {
+  const { mainCategory, subCategories, selectedSubCategory, products } =
+    await fetchData(params.categoryId);
 
   return (
     <div>
-      <ProductListHeader categoryName={categoryName} />
-      <div>
-        <Tab.Group>
-          <Tab.List className="flex overflow-x-auto whitespace-nowrap">
-            {categories.map((category) => (
-              <Tab
-                key={category}
-                className={({ selected }) =>
-                  `px-4 py-2 focus:outline-none ${
-                    selected
-                      ? "text-primary border-b-2 border-primary"
-                      : "text-gray-500"
-                  }`
-                }
-              >
-                {category}
-              </Tab>
-            ))}
-          </Tab.List>
-          <Tab.Panels className="m-4">
-            {categories.map((category) => (
-              <Tab.Panel key={category}>
-                <div>
-                  {products.map((product) => (
-                    <ProductCard key={product.id} {...product} />
-                  ))}
-                </div>
-              </Tab.Panel>
-            ))}
-          </Tab.Panels>
-        </Tab.Group>
-      </div>
+      <ProductListHeader categoryName={mainCategory.name} />
+      <TabGroup
+        subCategories={subCategories}
+        selectedSubCategory={selectedSubCategory}
+        products={products}
+      />
     </div>
   );
 }

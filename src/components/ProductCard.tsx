@@ -3,42 +3,52 @@ import Image from "next/image";
 import Link from "next/link";
 import { StaticImageData } from "next/image";
 
-type ProductCardProps = {
-  id: number;
+export type ProductCardProps = {
+  id: string;
   brand: string;
   name: string;
+  name_en: string;
   price: number;
-  image: StaticImageData;
+  image: StaticImageData | string;
   store: string;
+  material?: string;
+  careInstructions?: string;
+  countryOfOrigin?: string;
+  designerColor?: string;
+  lining?: string;
+  productNumber?: string;
+  lowestPrice?: number;
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  id,
+export default function ProductCard({
   brand,
   name,
+  name_en,
   price,
   image,
-}) => {
+}: ProductCardProps) {
   return (
-    <Link href={`/products/${id}`} className="block">
-      <div className="flex mb-4 h-32">
-        <div className="w-32 h-32 relative mr-2 bg-gray-100 rounded-md overflow-hidden">
+    <Link href={`/products/${name_en}`} className="block">
+      <div className="border rounded-lg overflow-hidden shadow-sm">
+        <div className="relative h-48">
           <Image
             src={image}
             alt={name}
             fill
             style={{ objectFit: "cover" }}
-            className="rounded-md"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
-        <div className="flex-1 flex flex-col justify-center">
+        <div className="p-4">
           <h3 className="text-sm font-semibold text-gray-600 mb-1">{brand}</h3>
           <h2 className="text-base font-medium mb-1">{name}</h2>
-          <p className="text-primary text-lg font-bold mb-1">{price.toLocaleString()}원</p>
+          {price !== undefined && (
+            <p className="text-primary text-lg font-bold mb-1">
+              {price.toLocaleString()}원
+            </p>
+          )}
         </div>
       </div>
     </Link>
   );
-};
-
-export default ProductCard;
+}

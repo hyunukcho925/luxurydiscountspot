@@ -1,51 +1,58 @@
 import React from "react";
+import { supabase } from "@/lib/supabaseClient";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import MainHeader from "@/components/header/MainHeader";
 import SearchIcon from "@/components/icon/SearchIcon";
 import ProductCard from "@/components/ProductCard";
-import { StaticImageData } from "next/image";
 
-import BurberryPouch from "@/assets/Product.png";
-import BottegaShoulder from "@/assets/Product.png";
-import LoeweBasket from "@/assets/Product.png";
-
-type Product = {
+interface Product {
   id: number;
-  brand: string;
   name: string;
+  name_en: string;
   price: number;
-  image: StaticImageData;
-  store: string;
-};
+  image_url: string;
+  brands: {
+    name_en: string;
+    name_ko: string;
+  };
+  product_categories: {
+    sub_categories: {
+      name: string;
+      main_categories: {
+        name: string;
+      };
+    };
+  }[];
+}
 
-const products: Product[] = [
-  {
-    id: 1,
-    brand: "Burberry",
-    name: "Phoebe 드로스트링 파우치",
-    price: 878000,
-    image: BurberryPouch,
-    store: "MYTHERESA",
-  },
-  {
-    id: 2,
-    brand: "Bottega Veneta",
-    name: "Cassette 레더 숄더 백",
-    price: 4354000,
-    image: BottegaShoulder,
-    store: "MYTHERESA",
-  },
-  {
-    id: 3,
-    brand: "Loewe",
-    name: "Paula's Ibiza Anagram 스몰바스켓백",
-    price: 1203000,
-    image: LoeweBasket,
-    store: "MYTHERESA",
-  },
-];
+async function getHotProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select(
+      `
+      *,
+      brands (name_en, name_ko),
+      product_categories (
+        sub_categories (
+          name,
+          main_categories (name)
+        )
+      )
+    `
+    )
+    .limit(3); // Adjust this number as needed
 
-export default function Page() {
+  if (error) {
+    console.error("Error fetching hot products:", error);
+    return [];
+  }
+
+  return data as Product[];
+}
+
+export default async function Page() {
+  const hotProducts = await getHotProducts();
+
   return (
     <div className="flex flex-col min-h-screen">
       <MainHeader />
@@ -83,8 +90,17 @@ export default function Page() {
           </h2>
 
           <div>
-            {products.map((product) => (
-              <ProductCard key={product.id} {...product} />
+            {hotProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id.toString()}
+                brand={product.brands.name_ko}
+                name={product.name}
+                name_en={product.name_en}
+                price={product.price}
+                image={product.image_url}
+                store="MYTHERESA" // You might want to add this to your database schema
+              />
             ))}
           </div>
         </div>

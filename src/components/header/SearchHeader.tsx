@@ -16,7 +16,7 @@ const SearchHeader: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 bg-white h-14">
+    <header className="sticky top-0 left-0 right-0 bg-white h-14 z-10">
       <div className="max-w-[500px] mx-auto px-4 h-full flex items-center">
         <button onClick={() => router.back()} className="mr-4">
           <BackIcon className="w-6 h-6 text-gray-600" />
