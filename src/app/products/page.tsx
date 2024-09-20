@@ -57,7 +57,7 @@ export default function ProductListPage() {
       <ProductListHeader categoryName={categoryName} />
       <div>
         <Tab.Group>
-          <Tab.List className="flex overflow-x-auto whitespace-nowrap mb-4">
+          <Tab.List className="flex overflow-x-auto whitespace-nowrap">
             {categories.map((category) => (
               <Tab
                 key={category}

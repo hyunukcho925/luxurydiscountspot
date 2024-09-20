@@ -14,13 +14,13 @@ export default function CategoryPage() {
   return (
     <>
       <CategoryHeader />
-      <div className="p-4">
-      <ul className="space-y-2">
+      <div>
+      <ul>
         {categories.map((category) => (
           <li key={category.id}>
             <Link
               href={`/products?category=${category.id}`}
-              className="block p-2 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+              className="block p-4 border-b border-gray-200"
             >
               {category.name}
             </Link>

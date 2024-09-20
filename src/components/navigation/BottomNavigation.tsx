@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import HomeIcon from "@/components/icon/HomeIcon";
 import CategoryIcon from "@/components/icon/CategoryIcon";
 import SearchIcon from "@/components/icon/SearchIcon";
-import UserIcon from "@/components/icon/MyIcon";
 
 const BottomNavigation: React.FC = () => {
   const pathname = usePathname();
@@ -15,7 +14,7 @@ const BottomNavigation: React.FC = () => {
     { name: "홈", path: "/", icon: HomeIcon },
     { name: "카테고리", path: "/category", icon: CategoryIcon },
     { name: "검색", path: "/search", icon: SearchIcon },
-    { name: "마이", path: "/my", icon: UserIcon },
+    // { name: "마이", path: "/my", icon: UserIcon }, //
   ];
 
   return (

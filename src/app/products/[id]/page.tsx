@@ -173,7 +173,7 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white border-t">
+      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white">
         <button className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg">
           구매하러 가기
         </button>

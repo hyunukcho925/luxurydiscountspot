@@ -10,6 +10,30 @@ import ShareIcon from "@/components/icon/ShareIcon";
 const ProductHeader: React.FC = () => {
   const router = useRouter();
 
+  const handleShare = async () => {
+    const currentUrl = window.location.href;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: document.title,
+          url: currentUrl
+        });
+        console.log("공유 성공");
+      } catch (error) {
+        console.log("공유 실패:", error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(currentUrl);
+        alert("URL이 클립보드에 복사되었습니다.");
+      } catch (error) {
+        console.log("클립보드 복사 실패:", error);
+        alert("URL 복사에 실패했습니다. 수동으로 주소를 복사해주세요.");
+      }
+    }
+  };
+
   return (
     <header className="sticky top-0 left-0 right-0 bg-white h-14">
       <div className="max-w-[500px] mx-auto px-4 h-full flex justify-between items-center">
@@ -25,7 +49,7 @@ const ProductHeader: React.FC = () => {
           <button onClick={() => router.push("/search")} className="mr-4">
             <SearchIcon className="w-6 h-6 text-gray-600" />
           </button>
-          <button onClick={() => console.log("Share functionality")}>
+          <button onClick={handleShare}>
             <ShareIcon className="w-6 h-6 text-gray-600" />
           </button>
         </div>
