@@ -12,7 +12,7 @@ const CategoryHeader: React.FC = () => {
       <div className="max-w-[500px] mx-auto px-4 h-full flex justify-between items-center">
         <h1 className="text-xl font-bold">카테고리</h1>
         <button onClick={() => router.push("/search")} className="p-0">
-          <SearchIcon className="w-6 h-6 text-gray-600" />
+          <SearchIcon className="w-6 h-6 text-gray-900" />
         </button>
       </div>
     </header>

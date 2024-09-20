@@ -39,18 +39,18 @@ const ProductHeader: React.FC = () => {
       <div className="max-w-[500px] mx-auto px-4 h-full flex justify-between items-center">
         <div className="flex items-center">
           <button onClick={() => router.back()} className="mr-4">
-            <BackIcon className="w-6 h-6 text-gray-600" />
+            <BackIcon className="w-6 h-6 text-gray-900" />
           </button>
           <button onClick={() => router.push("/")} className="mr-4">
-            <HomeIcon className="w-6 h-6 text-gray-600" />
+            <HomeIcon className="w-6 h-6 text-gray-900" />
           </button>
         </div>
         <div className="flex items-center">
           <button onClick={() => router.push("/search")} className="mr-4">
-            <SearchIcon className="w-6 h-6 text-gray-600" />
+            <SearchIcon className="w-6 h-6 text-gray-900" />
           </button>
           <button onClick={handleShare}>
-            <ShareIcon className="w-6 h-6 text-gray-600" />
+            <ShareIcon className="w-6 h-6 text-gray-900" />
           </button>
         </div>
       </div>

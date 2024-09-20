@@ -86,7 +86,7 @@ export default async function Page() {
 
         <div>
           <h2 className="text-xl font-bold mb-4 flex items-center">
-            <span className="mr-2">⚡</span> 지금 가장 HOT한 상품
+            <span className="mr-1">⚡</span> 지금 가장 HOT한 상품
           </h2>
 
           <div>
@@ -99,7 +99,7 @@ export default async function Page() {
                 name_en={product.name_en}
                 price={product.price}
                 image={product.image_url}
-                store="MYTHERESA" // You might want to add this to your database schema
+                store="MYTHERESA"
               />
             ))}
           </div>

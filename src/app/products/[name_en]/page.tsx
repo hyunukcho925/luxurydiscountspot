@@ -38,10 +38,14 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="px-4 py-6">
-          <h2 className="text-base text-gray-600 mb-1">{product.brands.name_ko}</h2>
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+          <h2 className="text-base text-gray-600 mb-1">
+            {product.brands.name_ko}
+          </h2>
+          <h1 className="text-2xl font-bold mb-2">
+            {product.brands.name_ko} {""} {product.name}
+          </h1>
           <div className="flex items-center gap-2">
-            <p className="text-sm bg-[#EDFEEE] text-primary font-bold p-1 rounded-lg">
+            <p className="text-sm bg-[#EDFEEE] text-primary font-bold p-1 rounded-md">
               최저가
             </p>
             <p className="text-lg font-bold">
@@ -53,30 +57,50 @@ export default async function ProductDetailPage({
         <div className="w-full h-[8px] bg-gray-100" />
 
         <div className="px-4 py-6">
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-2">상품 정보</h3>
-          </div>
+          <h2 className="text-xl font-semibold mb-4">상품 정보</h2>
 
           <div className="space-y-3">
             <div className="flex justify-between border-b border-gray-100 pb-4">
+              <span className="text-gray-800">브랜드</span>
+              <span className="text-gray-800 font-semibold">
+                {product.brands.name_ko} ({product.brands.name_en})
+              </span>
+            </div>
+            <div className="flex justify-between border-b border-gray-100 pb-4">
+              <span className="text-gray-800">상품명</span>
+              <span className="text-gray-800 font-semibold">
+                {product.name}
+              </span>
+            </div>
+            <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">소재</span>
-              <span>{product.material}</span>
+              <span className="text-gray-800 font-semibold">
+                {product.material}
+              </span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">관리방법</span>
-              <span>{product.care_instructions}</span>
+              <span className="text-gray-800 font-semibold">
+                {product.care_instructions}
+              </span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">제조국</span>
-              <span>{product.country_of_origin}</span>
+              <span className="text-gray-800 font-semibold">
+                {product.country_of_origin}
+              </span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">디자이너 컬러명</span>
-              <span>{product.designer_color}</span>
+              <span className="text-gray-800 font-semibold">
+                {product.designer_color}
+              </span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <span className="text-gray-800">안감</span>
-              <span>{product.lining}</span>
+              <span className="text-gray-800 font-semibold">
+                {product.lining}
+              </span>
             </div>
           </div>
         </div>
@@ -85,7 +109,7 @@ export default async function ProductDetailPage({
       <div className="w-full h-[8px] bg-gray-100" />
 
       <div className="px-4 py-6">
-        <h3 className="text-xl font-semibold mb-4">현재 최저가</h3>
+        <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
         <div className="space-y-3">
           {[
             { store: "파페치", price: 3288000 },
@@ -118,7 +142,7 @@ export default async function ProductDetailPage({
       <div className="w-full h-[8px] bg-gray-100" />
 
       <div className="px-4 py-6">
-        <h3 className="text-xl font-semibold mb-4">최저가 히스토리</h3>
+        <h2 className="text-xl font-semibold mb-4">최저가 히스토리</h2>
         <PriceHistoryChart />
         <div className="mt-4 space-y-2 border border-gray-200 p-4 rounded-lg">
           <div className="flex justify-between border-b border-gray-100 pb-3">
@@ -136,7 +160,7 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white max-w-[500px] mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-white max-w-[500px] mx-auto">
         <button className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg">
           구매하러 가기
         </button>
