@@ -1,18 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BackIcon from "@/components/icon/BackIcon";
 
 const SearchHeader: React.FC = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // 여기에 검색 로직을 구현합니다.
-    console.log("Searching for:", searchTerm);
-    // 예: router.push(`/search-results?q=${searchTerm}`);
+    if (searchTerm.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
   };
 
   return (
@@ -23,6 +28,7 @@ const SearchHeader: React.FC = () => {
         </button>
         <form onSubmit={handleSearch} className="flex-1">
           <input
+            ref={inputRef}
             type="text"
             placeholder="검색어를 입력하세요"
             value={searchTerm}

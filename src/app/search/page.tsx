@@ -1,20 +1,3 @@
-import React from "react";
-import BottomNavigation from "@/components/navigation/BottomNavigation";
-import SearchHeader from "@/components/header/SearchHeader";
+import SearchEntry from "./entry";
 
-export default function SearchPage() {
-  return (
-    <>
-      <SearchHeader />
-      <div className="p-4">
-        <div className="mb-4">
-        </div>
-        
-        <div>
-          <p className="text-gray-600">최근 검색어가 여기에 표시됩니다.</p>
-        </div>
-      </div>
-      <BottomNavigation />
-    </>
-  );
-}
+export default SearchEntry;

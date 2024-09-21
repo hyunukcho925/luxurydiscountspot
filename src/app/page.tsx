@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import MainHeader from "@/components/header/MainHeader";
@@ -63,14 +64,17 @@ export default async function Page() {
           <span className="text-primary">어디에서 가장 저렴할까요?</span>
         </h1>
         <div className="relative mb-4">
-          <input
-            type="text"
-            placeholder="상품을 검색해 보세요"
-            className="w-full py-3 px-4 pr-12 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <button className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-primary rounded-full p-2">
-            <SearchIcon className="h-5 w-5 text-white" />
-          </button>
+          <Link href="/search" className="block">
+            <input
+              type="text"
+              placeholder="상품을 검색해 보세요"
+              className="w-full py-3 px-4 pr-12 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+              readOnly
+            />
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-primary rounded-full p-2">
+              <SearchIcon className="h-5 w-5 text-white" />
+            </div>
+          </Link>
         </div>
 
         <div className="flex space-x-2 mb-6 overflow-x-auto">
@@ -97,9 +101,7 @@ export default async function Page() {
                 brand={product.brands.name_ko}
                 name={product.name}
                 name_en={product.name_en}
-                price={product.price}
                 image={product.image_url}
-                store="MYTHERESA"
               />
             ))}
           </div>
