@@ -7,7 +7,7 @@ interface RightIconProps {
 
 const RightIcon: React.FC<RightIconProps> = ({
   className = "size-6",
-  strokeWidth = 1.5,
+  strokeWidth = 2,
 }) => {
   return (
     <svg

@@ -5,29 +5,21 @@ import { Tab } from "@headlessui/react";
 import ProductCard from "./ProductCard";
 import { StaticImageData } from "next/image";
 
-type SubCategory = {
+interface SubCategory {
   id: string;
   name: string;
 };
 
-type Product = {
+interface Product {
   id: string;
-  brand: string;
-  name: string;
-  name_en: string;
-  price: number;
-  image: StaticImageData;
-  store: string;
-  material?: string;
-  careInstructions?: string;
-  countryOfOrigin?: string;
-  designerColor?: string;
-  lining?: string;
+  brand_name_ko: string;
+  product_name: string;
+  product_name_en: string;
+  image_url: StaticImageData | string;
   productNumber?: string;
-  lowestPrice?: number;
 };
 
-type TabGroupProps = {
+interface TabGroupProps {
   subCategories: SubCategory[];
   selectedSubCategory: SubCategory;
   products: Product[];
@@ -51,7 +43,7 @@ export function TabGroup({
             className={({ selected }: { selected: boolean }) =>
               `px-4 py-2 focus:outline-none ${
                 selected
-                  ? "text-primary border-b-2 border-primary"
+                  ? "text-primary font-bold border-b-2 border-primary"
                   : "text-gray-500"
               }`
             }
@@ -68,19 +60,10 @@ export function TabGroup({
                 <ProductCard
                   key={product.id}
                   id={product.id}
-                  brand={product.brand}
-                  name={product.name}
-                  name_en={product.name_en}
-                  price={product.price}
-                  image={product.image}
-                  store={product.store}
-                  material={product.material}
-                  careInstructions={product.careInstructions}
-                  countryOfOrigin={product.countryOfOrigin}
-                  designerColor={product.designerColor}
-                  lining={product.lining}
-                  productNumber={product.productNumber}
-                  lowestPrice={product.lowestPrice}
+                  brand_name_ko={product.brand_name_ko}
+                  product_name={product.product_name}
+                  product_name_en={product.product_name_en}
+                  image_url={product.image_url}
                 />
               ))}
             </div>

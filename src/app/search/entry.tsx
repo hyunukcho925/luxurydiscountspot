@@ -51,10 +51,12 @@ export default function SearchEntry() {
 
   async function saveSearchTerm(term: string) {
     try {
-      const { error } = await supabase.rpc('save_and_increment_search', { search_term_param: term });
+      const { error } = await supabase.rpc("save_and_increment_search", {
+        search_term_param: term,
+      });
       if (error) throw error;
     } catch (error) {
-      console.error('검색어 저장 오류:', error);
+      console.error("검색어 저장 오류:", error);
     }
   }
 
@@ -73,10 +75,10 @@ export default function SearchEntry() {
               <ProductCard
                 key={product.id}
                 id={product.id}
-                brand={product.brand_name_ko}
-                name={product.product_name}
-                name_en={product.product_name_en || ""}
-                image={product.image_url || ""}
+                brand_name_ko={product.brand_name_ko}
+                product_name={product.product_name}
+                product_name_en={product.product_name_en || ""}
+                image_url={product.image_url || ""}
               />
             ))}
           </div>

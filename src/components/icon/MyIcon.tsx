@@ -7,7 +7,7 @@ interface MyIconProps {
 
 const MyIcon: React.FC<MyIconProps> = ({
   className = "size-6",
-  strokeWidth = 1.5,
+  strokeWidth = 2,
 }) => {
   return (
     <svg

@@ -1,9 +1,7 @@
 import { supabase } from "./supabaseClient";
 
 export async function getMainCategories() {
-  const { data, error } = await supabase
-    .from("main_categories")
-    .select("*");
+  const { data, error } = await supabase.from("main_categories").select("*");
 
   if (error) {
     console.error("Error fetching main categories:", error);
@@ -49,5 +47,12 @@ export async function getProductsByCategory(subCategoryId: string) {
     return [];
   }
 
-  return data;
+  return data.map((product) => ({
+    ...product,
+    brand_name_ko: product.brands?.name_ko,
+    brand_name_en: product.brands?.name_en,
+    product_name: product.name,
+    product_name_en: product.name_en,
+    image_url: product.image_url,
+  }));
 }

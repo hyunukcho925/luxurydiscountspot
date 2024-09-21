@@ -7,7 +7,7 @@ interface CategoryIconProps {
 
 const CategoryIcon: React.FC<CategoryIconProps> = ({
   className = "size-6",
-  strokeWidth = 1.5,
+  strokeWidth = 2,
 }) => {
   return (
     <svg

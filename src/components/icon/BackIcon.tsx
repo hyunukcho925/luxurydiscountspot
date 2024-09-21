@@ -7,7 +7,7 @@ interface BackIconProps {
 
 const BackIcon: React.FC<BackIconProps> = ({
   className = "size-6",
-  strokeWidth = 1.5,
+  strokeWidth = 2,
 }) => {
   return (
     <svg

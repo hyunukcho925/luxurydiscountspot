@@ -6,7 +6,6 @@ import {
   getProductsByCategory,
 } from "@/lib/categories";
 import { TabGroup } from "@/components/TabGroup";
-import { StaticImageData } from "next/image";
 
 interface MainCategory {
   id: string;
@@ -23,32 +22,11 @@ interface SubCategory {
 
 interface Product {
   id: string;
-  name: string;
-  brand: string;
-  name_en: string;
-  price: number;
-  image: StaticImageData;
-  store: string;
-}
-
-function validateAndTransformImageUrl(
-  url: string | StaticImageData
-): StaticImageData {
-  if (typeof url !== "string") {
-    return url;
-  }
-
-  const allowedDomains = ["gvzpgksrsvrwzawlqdzz.supabase.co"];
-  try {
-    const imageUrl = new URL(url);
-    if (allowedDomains.includes(imageUrl.hostname)) {
-      return { src: url, height: 300, width: 300 };
-    } else {
-      return { src: "/path/to/placeholder-image.jpg", height: 300, width: 300 };
-    }
-  } catch {
-    return { src: "/path/to/placeholder-image.jpg", height: 300, width: 300 };
-  }
+  brand_name_ko: string;
+  product_name: string;
+  product_name_en: string;
+  image_url: string;
+  productNumber?: string;
 }
 
 async function fetchData(categoryName: string): Promise<{
@@ -74,14 +52,9 @@ async function fetchData(categoryName: string): Promise<{
   }
 
   const selectedSubCategory = subCategories[0];
-  const rawProducts: Product[] = await getProductsByCategory(
+  const products: Product[] = await getProductsByCategory(
     selectedSubCategory.id
   );
-
-  const products = rawProducts.map((product) => ({
-    ...product,
-    image: validateAndTransformImageUrl(product.image),
-  }));
 
   return {
     mainCategory: selectedMainCategory,

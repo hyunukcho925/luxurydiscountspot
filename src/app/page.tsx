@@ -7,26 +7,15 @@ import SearchIcon from "@/components/icon/SearchIcon";
 import ProductCard from "@/components/ProductCard";
 
 interface Product {
-  id: number;
-  name: string;
-  name_en: string;
-  price: number;
+  id: string;
+  brand_name_ko: string;
+  product_name: string;
+  product_name_en: string;
   image_url: string;
-  brands: {
-    name_en: string;
-    name_ko: string;
-  };
-  product_categories: {
-    sub_categories: {
-      name: string;
-      main_categories: {
-        name: string;
-      };
-    };
-  }[];
+  productNumber?: string;
 }
 
-async function getHotProducts() {
+async function getHotProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select(
@@ -41,14 +30,21 @@ async function getHotProducts() {
       )
     `
     )
-    .limit(3); // Adjust this number as needed
+    .limit(8);
 
   if (error) {
     console.error("Error fetching hot products:", error);
     return [];
   }
 
-  return data as Product[];
+  return data.map((product) => ({
+    id: product.id,
+    brand_name_ko: product.brands?.name_ko || "",
+    product_name: product.name,
+    product_name_en: product.name_en,
+    image_url: product.image_url,
+    productNumber: product.product_number,
+  }));
 }
 
 export default async function Page() {
@@ -63,7 +59,7 @@ export default async function Page() {
           <br />
           <span className="text-primary">어디에서 가장 저렴할까요?</span>
         </h1>
-        <div className="relative mb-4">
+        <div className="relative mb-6">
           <Link href="/search" className="block">
             <input
               type="text"
@@ -77,17 +73,6 @@ export default async function Page() {
           </Link>
         </div>
 
-        {/* <div className="flex space-x-2 mb-6 overflow-x-auto">
-          {["초코", "공딩백딩", "대파", "드립커피", "피"].map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-2 bg-gray-100 rounded-full text-sm whitespace-nowrap"
-            >
-              {tag}
-            </span>
-          ))}
-        </div> */}
-
         <div>
           <h2 className="text-xl font-bold mb-4 flex items-center">
             <span className="mr-1">⚡</span> 지금 가장 HOT한 상품
@@ -97,11 +82,11 @@ export default async function Page() {
             {hotProducts.map((product) => (
               <ProductCard
                 key={product.id}
-                id={product.id.toString()}
-                brand={product.brands.name_ko}
-                name={product.name}
-                name_en={product.name_en}
-                image={product.image_url}
+                id={product.id}
+                brand_name_ko={product.brand_name_ko}
+                product_name={product.product_name}
+                product_name_en={product.product_name_en}
+                image_url={product.image_url}
               />
             ))}
           </div>
