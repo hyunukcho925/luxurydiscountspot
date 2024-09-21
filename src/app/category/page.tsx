@@ -13,9 +13,9 @@ export default async function CategoryPage() {
       <div>
         <ul>
           {mainCategories.map((category) => (
-            <li key={category.name}>
+            <li key={category.id}>
               <Link
-                href={`/products/${category.name}`}
+                href={`/category/${encodeURIComponent(category.name)}`}
                 className="block p-4 border-b border-gray-200"
               >
                 {category.name}

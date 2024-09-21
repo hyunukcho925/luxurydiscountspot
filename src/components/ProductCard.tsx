@@ -26,7 +26,7 @@ export default function ProductCard({
   return (
     <Link href={`/products/${name_en}`} className="block mb-4">
       <div className="rounded-lg overflow-hidden flex items-center">
-        <div className="border rounded-lg relative w-40 h-40 flex-shrink-0 bg-gray-100 size-20">
+        <div className="border rounded-lg relative flex-shrink-0 bg-gray-100 size-32">
           <Image
             src={image}
             alt={name}

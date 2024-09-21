@@ -77,7 +77,7 @@ export default async function Page() {
           </Link>
         </div>
 
-        <div className="flex space-x-2 mb-6 overflow-x-auto">
+        {/* <div className="flex space-x-2 mb-6 overflow-x-auto">
           {["초코", "공딩백딩", "대파", "드립커피", "피"].map((tag) => (
             <span
               key={tag}
@@ -86,7 +86,7 @@ export default async function Page() {
               {tag}
             </span>
           ))}
-        </div>
+        </div> */}
 
         <div>
           <h2 className="text-xl font-bold mb-4 flex items-center">

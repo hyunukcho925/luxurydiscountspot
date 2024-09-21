@@ -51,7 +51,7 @@ function validateAndTransformImageUrl(
   }
 }
 
-async function fetchData(categoryId: string): Promise<{
+async function fetchData(categoryName: string): Promise<{
   mainCategory: MainCategory;
   subCategories: SubCategory[];
   selectedSubCategory: SubCategory;
@@ -59,7 +59,7 @@ async function fetchData(categoryId: string): Promise<{
 }> {
   const mainCategories: MainCategory[] = await getMainCategories();
   const selectedMainCategory =
-    mainCategories.find((cat) => cat.id === categoryId) || mainCategories[0];
+    mainCategories.find((cat) => cat.name === decodeURIComponent(categoryName));
 
   if (!selectedMainCategory) {
     throw new Error("Main category not found");
@@ -91,22 +91,27 @@ async function fetchData(categoryId: string): Promise<{
   };
 }
 
-export default async function ProductListPage({
+export default async function CategoryProductListPage({
   params,
 }: {
-  params: { categoryId: string };
+  params: { categoryName: string };
 }) {
-  const { mainCategory, subCategories, selectedSubCategory, products } =
-    await fetchData(params.categoryId);
+  try {
+    const { mainCategory, subCategories, selectedSubCategory, products } =
+      await fetchData(params.categoryName);
 
-  return (
-    <div>
-      <ProductListHeader categoryName={mainCategory.name} />
-      <TabGroup
-        subCategories={subCategories}
-        selectedSubCategory={selectedSubCategory}
-        products={products}
-      />
-    </div>
-  );
+    return (
+      <div>
+        <ProductListHeader categoryName={mainCategory.name} />
+        <TabGroup
+          subCategories={subCategories}
+          selectedSubCategory={selectedSubCategory}
+          products={products}
+        />
+      </div>
+    );
+  } catch (error) {
+    console.error("Error in CategoryProductListPage:", error);
+    return <div>Error loading product list. Please try again later.</div>;
+  }
 }
