@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from 'next/script';
 
 const pretendard = {
   variable: "--font-pretendard",
@@ -82,6 +84,19 @@ export default function RootLayout({
           crossOrigin="anonymous"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable-dynamic-subset.css"
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-HCN86CD6JL"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-HCN86CD6JL');
+          `}
+        </Script>
       </head>
       <body
         className={`${pretendard.className} antialiased bg-gray-200 min-h-screen`}
@@ -89,6 +104,7 @@ export default function RootLayout({
         <div className="max-w-[500px] mx-auto bg-white min-h-screen shadow-md relative pb-16">
           {children}
         </div>
+        <SpeedInsights />
       </body>
     </html>
   );
