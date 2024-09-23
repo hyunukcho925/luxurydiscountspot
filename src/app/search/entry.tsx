@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import SearchHeader from "@/components/header/SearchHeader";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/lib/supabaseClient";
+import { Suspense } from 'react';
 
 interface Product {
   id: string;
@@ -14,7 +15,15 @@ interface Product {
   brand_name_ko: string;
 }
 
-export default function SearchEntry() {
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
