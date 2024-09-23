@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-pretendard)"],
+        pretendard: ["var(--font-pretendard)"],
       },
       colors: {
         primary: "#35B95E",
@@ -19,4 +19,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;

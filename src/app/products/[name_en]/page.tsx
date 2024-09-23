@@ -1,5 +1,6 @@
 import React from "react";
 import { notFound } from "next/navigation";
+import { Metadata } from 'next';
 import ProductHeader from "@/components/header/ProductHeader";
 import Image from "next/image";
 import RightIcon from "@/components/icon/RightIcon";
@@ -10,6 +11,28 @@ const PriceHistoryChart = dynamic(
   () => import("@/containers/PriceHistoryChart"),
   { ssr: false }
 );
+
+export async function generateMetadata(
+  { params }: { params: { name_en: string } }
+): Promise<Metadata> {
+  const product = await getProduct(decodeURIComponent(params.name_en));
+
+  if (!product) {
+    return {
+      title: '상품을 찾을 수 없습니다',
+    };
+  }
+
+  return {
+    title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
+    description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요.`,
+    openGraph: {
+      title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
+      description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요.`,
+      images: [{ url: product.image_url }],
+    },
+  };
+}
 
 export default async function ProductDetailPage({
   params,
