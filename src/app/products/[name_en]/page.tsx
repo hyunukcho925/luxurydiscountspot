@@ -23,13 +23,41 @@ export async function generateMetadata(
     };
   }
 
+  const productUrl = `https://luxurydiscountspot.vercel.app/products/${encodeURIComponent(params.name_en)}`;
+
   return {
     title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
-    description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요.`,
+    description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요. 럭셔리 디스팟에서 최저가로 구매하세요.`,
     openGraph: {
       title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
-      description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요.`,
-      images: [{ url: product.image_url }],
+      description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요. 럭셔리 디스팟에서 최저가로 구매하세요.`,
+      url: productUrl,
+      siteName: '럭셔리 디스팟',
+      images: [{ 
+        url: product.image_url,
+        width: 800,
+        height: 800,
+        alt: `${product.brands.name_ko} ${product.name} 이미지`
+      }],
+      locale: 'ko_KR',
+      type: 'website',
+    },
+    alternates: {
+      canonical: productUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
+      description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요. 럭셔리 디스팟에서 최저가로 구매하세요.`,
+      images: [product.image_url],
+    },
+    other: {
+      'price': `${product.lowest_price?.toLocaleString()}원`,
+      'brand': product.brands.name_ko,
     },
   };
 }
@@ -61,9 +89,9 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="px-4 py-6">
-          <h2 className="text-base text-gray-600 mb-1">
+          <div className="text-base text-gray-600 mb-1">
             {product.brands.name_ko}
-          </h2>
+          </div>
           <h1 className="text-2xl font-bold mb-2">
             {product.brands.name_ko} {""} {product.name}
           </h1>
@@ -84,46 +112,40 @@ export default async function ProductDetailPage({
 
           <div className="space-y-3">
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">브랜드</span>
-              <span className="text-gray-800 font-semibold">
+              <h3 className="text-gray-800">브랜드</h3>
+              <p className="text-gray-800 font-semibold">
                 {product.brands.name_ko} ({product.brands.name_en})
-              </span>
+              </p>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">상품명</span>
-              <span className="text-gray-800 font-semibold">
-                {product.name}
-              </span>
+              <h3 className="text-gray-800">상품명</h3>
+              <p className="text-gray-800 font-semibold">{product.name}</p>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">소재</span>
-              <span className="text-gray-800 font-semibold">
-                {product.material}
-              </span>
+              <h3 className="text-gray-800">소재</h3>
+              <p className="text-gray-800 font-semibold">{product.material}</p>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">관리방법</span>
-              <span className="text-gray-800 font-semibold">
+              <h3 className="text-gray-800">관리방법</h3>
+              <p className="text-gray-800 font-semibold">
                 {product.care_instructions}
-              </span>
+              </p>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">제조국</span>
-              <span className="text-gray-800 font-semibold">
+              <h3 className="text-gray-800">제조국</h3>
+              <p className="text-gray-800 font-semibold">
                 {product.country_of_origin}
-              </span>
+              </p>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">디자이너 컬러명</span>
-              <span className="text-gray-800 font-semibold">
+              <h3 className="text-gray-800">디자이너 컬러명</h3>
+              <p className="text-gray-800 font-semibold">
                 {product.designer_color}
-              </span>
+              </p>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
-              <span className="text-gray-800">안감</span>
-              <span className="text-gray-800 font-semibold">
-                {product.lining}
-              </span>
+              <h3 className="text-gray-800">안감</h3>
+              <p className="text-gray-800 font-semibold">{product.lining}</p>
             </div>
           </div>
         </div>
@@ -169,16 +191,16 @@ export default async function ProductDetailPage({
         <PriceHistoryChart />
         <div className="mt-4 space-y-2 border border-gray-200 p-4 rounded-lg">
           <div className="flex justify-between border-b border-gray-100 pb-3">
-            <span className="text-gray-600">역대 최저가</span>
-            <span className="font-bold text-primary">3,124,000원</span>
+            <h3 className="text-gray-600">역대 최저가</h3>
+            <p className="font-bold text-primary">3,124,000원</p>
           </div>
           <div className="flex justify-between border-b border-gray-100 pb-3">
-            <span className="text-gray-600">평균가</span>
-            <span className="font-bold">4,288,000원</span>
+            <h3 className="text-gray-600">평균가</h3>
+            <p className="font-bold">4,288,000원</p>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600 ">역대 최고가</span>
-            <span className="font-bold text-secondary">8,288,000원</span>
+            <h3 className="text-gray-600 ">역대 최고가</h3>
+            <p className="font-bold text-secondary">8,288,000원</p>
           </div>
         </div>
       </div>

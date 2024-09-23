@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     "프리미엄 브랜드",
     "스마트 쇼핑",
   ],
-  authors: [{ name: "DISPOT", url: "https://luxurydiscountspot.vercel.app/" }],
+  authors: [{ name: "DISPOT" }],
   creator: "DISPOT",
   themeColor: "#ffffff",
   icons: {
@@ -62,6 +62,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: {
+    canonical: "https://luxurydiscountspot.vercel.app/",
+  },
+  publisher: "DISPOT",
 };
 
 export default function RootLayout({
