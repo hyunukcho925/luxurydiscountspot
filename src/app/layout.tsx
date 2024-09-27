@@ -56,7 +56,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "DISPOT" }],
   creator: "DISPOT",
-  themeColor: "#ffffff",
   icons: {
     icon: "/favicon.ico",
   },
@@ -97,6 +96,10 @@ export default function RootLayout({
             gtag('config', 'G-HCN86CD6JL');
           `}
         </Script>
+        <meta
+          name="naver-site-verification"
+          content="6033dd849f8801ffcdc2f72dc3206e0fb1c16627"
+        />
       </head>
       <body
         className={`${pretendard.className} antialiased bg-gray-200 min-h-screen`}
