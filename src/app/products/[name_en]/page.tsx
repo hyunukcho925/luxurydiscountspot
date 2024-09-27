@@ -23,7 +23,7 @@ export async function generateMetadata(
     };
   }
 
-  const productUrl = `https://luxurydiscountspot.vercel.app/products/${encodeURIComponent(params.name_en)}`;
+  const productUrl = `https://luxurydispot.com/products/${encodeURIComponent(params.name_en)}`;
 
   return {
     title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
