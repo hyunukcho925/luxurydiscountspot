@@ -4,13 +4,13 @@ import { Metadata } from 'next';
 import ProductHeader from "@/components/header/ProductHeader";
 import Image from "next/image";
 import RightIcon from "@/components/icon/RightIcon";
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import { getProduct } from "../../../lib/products";
 
-const PriceHistoryChart = dynamic(
-  () => import("@/containers/PriceHistoryChart"),
-  { ssr: false }
-);
+// const PriceHistoryChart = dynamic(
+//   () => import("@/containers/PriceHistoryChart"),
+//   { ssr: false }
+// );
 
 export async function generateMetadata(
   { params }: { params: { name_en: string } }
@@ -186,7 +186,7 @@ export default async function ProductDetailPage({
 
       <div className="w-full h-[8px] bg-gray-100" />
 
-      <div className="px-4 py-6">
+      {/* <div className="px-4 py-6">
         <h2 className="text-xl font-semibold mb-4">최저가 히스토리</h2>
         <PriceHistoryChart />
         <div className="mt-4 space-y-2 border border-gray-200 p-4 rounded-lg">
@@ -203,7 +203,7 @@ export default async function ProductDetailPage({
             <p className="font-bold text-secondary">8,288,000원</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-white max-w-[500px] mx-auto">
         <button className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg">
