@@ -3,28 +3,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { StaticImageData } from "next/image";
 
-export type ProductCardProps = {
+export interface ProductCardProps {
   id: string;
   brand_name_en: string;
+  brand_name_ko?: string;
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
   lowest_price?: number;
   material?: string;
-  careInstructions?: string;
-  countryOfOrigin?: string;
-  designerColor?: string;
+  care_instructions?: string;
+  country_of_origin?: string;
+  designer_color?: string;
   lining?: string;
-  productNumber?: string;
-};
+  product_number?: string;
+}
 
-export default function ProductCard({
+const ProductCard: React.FC<ProductCardProps> = ({
   brand_name_en,
+  brand_name_ko,
   product_name,
   product_name_en,
   image_url,
   lowest_price,
-}: ProductCardProps) {
+}) => {
   return (
     <Link
       href={`/products/${encodeURIComponent(product_name_en)}`}
@@ -41,10 +43,12 @@ export default function ProductCard({
         </div>
         <div className="p-4 flex-grow">
           <h3 className="text-base font-bold text-gray-800 mb-1">
-            {brand_name_en}
+            {brand_name_ko || brand_name_en}
           </h3>
-          <h2 className="text-base font-medium text-gray-800 mb-1">{product_name}</h2>
-          {lowest_price && (
+          <h2 className="text-base font-medium text-gray-800 mb-1">
+            {product_name}
+          </h2>
+          {lowest_price !== undefined && (
             <p className="text-base font-bold text-primary">
               {lowest_price.toLocaleString()}원
             </p>
@@ -53,4 +57,6 @@ export default function ProductCard({
       </div>
     </Link>
   );
-}
+};
+
+export default ProductCard;

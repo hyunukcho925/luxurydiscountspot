@@ -27,7 +27,7 @@ import { getProduct, ProductWithPrices } from "../../../lib/products";
 export async function generateMetadata(
   { params }: { params: { name_en: string } }
 ): Promise<Metadata> {
-  const product = await getProduct(params.name_en); // decodeURIComponent 제거
+  const product = await getProduct(params.name_en);
 
   if (!product) {
     return {

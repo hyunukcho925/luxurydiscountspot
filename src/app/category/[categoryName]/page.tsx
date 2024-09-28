@@ -23,12 +23,13 @@ interface SubCategory {
 interface Product {
   id: string;
   brand_name_ko: string;
-  brand_name_en: string;  // 이 줄을 추가
+  brand_name_en: string;
   product_name: string;
   product_name_en: string;
   image_url: string;
   productNumber?: string;
-  lowest_price?: number;  // 가격 정보도 추가
+  sub_category_id: string;
+  lowest_price?: number;
 }
 
 async function fetchData(categoryName: string): Promise<{

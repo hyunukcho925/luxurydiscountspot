@@ -9,10 +9,11 @@ import { Suspense } from 'react';
 
 interface Product {
   id: string;
+  brand_name_en: string;
+  brand_name_ko: string;
   product_name: string;
   product_name_en: string | null;
   image_url: string | null;
-  brand_name_en: string;
   lowest_price: number;
 }
 
@@ -86,6 +87,7 @@ function SearchContent() {
                 key={product.id}
                 id={product.id}
                 brand_name_en={product.brand_name_en}
+                brand_name_ko={product.brand_name_ko}
                 product_name={product.product_name}
                 product_name_en={product.product_name_en || ""}
                 image_url={product.image_url || ""}

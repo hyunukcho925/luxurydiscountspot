@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Tab } from "@headlessui/react";
 import ProductCard from "./ProductCard";
 import { StaticImageData } from "next/image";
@@ -19,6 +19,7 @@ interface Product {
   image_url: StaticImageData | string;
   productNumber?: string;
   lowest_price?: number;
+  sub_category_id: string; // 이 필드를 추가해주세요
 };
 
 interface TabGroupProps {
@@ -32,6 +33,14 @@ export function TabGroup({
   selectedSubCategory,
   products,
 }: TabGroupProps) {
+  // 서브카테고리별로 상품을 그룹화합니다.
+  const groupedProducts = useMemo(() => {
+    return subCategories.reduce((acc, category) => {
+      acc[category.id] = products.filter(product => product.sub_category_id === category.id);
+      return acc;
+    }, {} as Record<string, Product[]>);
+  }, [subCategories, products]);
+
   return (
     <Tab.Group
       defaultIndex={subCategories.findIndex(
@@ -58,14 +67,15 @@ export function TabGroup({
         {subCategories.map((category: SubCategory) => (
           <Tab.Panel key={category.id}>
             <div>
-              {products.map((product: Product, index: number) => (
+              {groupedProducts[category.id]?.map((product: Product, index: number) => (
                 <ProductCard
                   key={`${product.id}-${index}`}
                   id={product.id}
                   brand_name_en={product.brand_name_en}
+                  brand_name_ko={product.brand_name_ko}
                   product_name={product.product_name}
-                  product_name_en={product.product_name_en}
-                  image_url={product.image_url}
+                  product_name_en={product.product_name_en || ""}
+                  image_url={product.image_url || ""}
                   lowest_price={product.lowest_price}
                 />
               ))}
