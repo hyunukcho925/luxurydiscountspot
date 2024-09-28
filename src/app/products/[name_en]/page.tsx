@@ -172,14 +172,14 @@ export default async function ProductDetailPage({
 
       <div className="px-4 py-6">
         <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
-        <div className="space-y-3">
+        <div>
           {(product.sorted_prices as PriceInfo[]).map(({ site, price, url }) => (
             <a
               key={site.id}
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 transition-colors duration-200"
+              className="flex justify-between items-center border-b border-gray-100 py-5"
             >
               <span className="text-gray-800">{site.name}</span>
               <div className="flex items-center">

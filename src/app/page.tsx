@@ -51,9 +51,9 @@ export default async function Page() {
   const hotProducts = await getHotProducts();
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen-56">
       <MainHeader />
-      <main className="flex-grow p-4">
+      <main className="flex-grow px-4 py-6">
         <h1 className="text-2xl font-extrabold mb-4 text-center leading-normal">
           <span className="text-black-500">원하는 명품 직구, </span>
           <br />
