@@ -123,9 +123,9 @@ export default async function ProductDetailPage({
         <div className="px-4 py-6">
           <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
           <div>
-            {product.sorted_prices.map(({ site, price, url }) => (
+            {product.sorted_prices.map(({ site, price, url }, index) => (
               <a
-                key={site.id}
+                key={`${site.id}-${index}`}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"

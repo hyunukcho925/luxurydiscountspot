@@ -58,9 +58,9 @@ export function TabGroup({
         {subCategories.map((category: SubCategory) => (
           <Tab.Panel key={category.id}>
             <div>
-              {products.map((product: Product) => (
+              {products.map((product: Product, index: number) => (
                 <ProductCard
-                  key={product.id}
+                  key={`${product.id}-${index}`}
                   id={product.id}
                   brand_name_en={product.brand_name_en}
                   product_name={product.product_name}
