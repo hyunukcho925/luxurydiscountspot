@@ -147,7 +147,7 @@ export default async function ProductDetailPage({
                   <span
                     className={`font-bold ${
                       price === product.lowest_price
-                        ? "text-green-500"
+                        ? "text-primary"
                         : "text-gray-900"
                     }`}
                   >
@@ -243,7 +243,7 @@ export default async function ProductDetailPage({
             href={product.sorted_prices[0].url}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg block text-center"
+            className="w-full bg-primary text-white font-bold py-3 px-2 rounded-lg block text-center"
           >
             구매하러 가기
           </a>

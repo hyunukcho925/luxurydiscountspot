@@ -29,7 +29,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
     return (
       <div className="bg-white p-2 border border-gray-200 rounded shadow">
         <p className="text-sm font-semibold">{`${label}`}</p>
-        <p className="text-sm text-green-600">{`${payload[0].value?.toLocaleString()}원`}</p>
+        <p className="text-sm text-primary">{`${payload[0].value?.toLocaleString()}원`}</p>
       </div>
     );
   }

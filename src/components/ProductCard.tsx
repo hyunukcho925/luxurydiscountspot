@@ -45,7 +45,7 @@ export default function ProductCard({
           </h3>
           <h2 className="text-base font-medium text-gray-800 mb-1">{product_name}</h2>
           {lowest_price && (
-            <p className="text-base font-bold text-green-500">
+            <p className="text-base font-bold text-primary">
               {lowest_price.toLocaleString()}원
             </p>
           )}
