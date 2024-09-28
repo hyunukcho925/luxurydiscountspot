@@ -24,7 +24,7 @@ export default function ProductCard({
   image_url,
 }: ProductCardProps) {
   return (
-    <Link href={`/products/${product_name_en}`} className="block mb-4">
+    <Link href={`/products/${encodeURIComponent(product_name_en)}`} className="block mb-4">
       <div className="rounded-lg overflow-hidden flex items-center">
         <div className="border rounded-lg relative flex-shrink-0 bg-gray-100 size-32">
           <Image

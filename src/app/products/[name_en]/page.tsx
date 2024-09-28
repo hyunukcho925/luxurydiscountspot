@@ -5,7 +5,19 @@ import ProductHeader from "@/components/header/ProductHeader";
 import Image from "next/image";
 import RightIcon from "@/components/icon/RightIcon";
 // import dynamic from 'next/dynamic';
-import { getProduct } from "../../../lib/products";
+import { getProduct, ProductWithPrices, PriceInfo } from "../../../lib/products";
+
+// PriceInfo 인터페이스 추가
+// interface PriceInfo {
+//   site: {
+//     id: string;
+//     name: string;
+//     image_url: string;
+//   };
+//   price: number;
+//   url: string;
+//   crawled_at: string;
+// }
 
 // const PriceHistoryChart = dynamic(
 //   () => import("@/containers/PriceHistoryChart"),
@@ -15,7 +27,7 @@ import { getProduct } from "../../../lib/products";
 export async function generateMetadata(
   { params }: { params: { name_en: string } }
 ): Promise<Metadata> {
-  const product = await getProduct(decodeURIComponent(params.name_en));
+  const product = await getProduct(params.name_en); // decodeURIComponent 제거
 
   if (!product) {
     return {
@@ -67,9 +79,12 @@ export default async function ProductDetailPage({
 }: {
   params: { name_en: string };
 }) {
-  const product = await getProduct(decodeURIComponent(params.name_en));
+  const product = await getProduct(params.name_en) as ProductWithPrices | null;
+  console.log("Params:", params);
+  console.log("Product:", product);
 
   if (!product) {
+    console.log("Product not found, returning 404");
     notFound();
   }
 
@@ -145,7 +160,9 @@ export default async function ProductDetailPage({
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-4">
               <h3 className="text-gray-800">안감</h3>
-              <p className="text-gray-800 font-semibold">{product.lining}</p>
+              <p className="text-gray-800 font-semibold">
+                {product.lining}
+              </p>
             </div>
           </div>
         </div>
@@ -156,32 +173,38 @@ export default async function ProductDetailPage({
       <div className="px-4 py-6">
         <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
         <div className="space-y-3">
-          {[
-            { store: "파페치", price: 3288000 },
-            { store: "매치스패션", price: 4266769 },
-            { store: "마이테레사", price: 6271600 },
-          ].map(({ store, price }) => (
-            <div
-              key={store}
-              className="flex justify-between items-center border-b border-gray-100 pb-3"
+          {(product.sorted_prices as PriceInfo[]).map(({ site, price, url }) => (
+            <a
+              key={site.id}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 transition-colors duration-200"
             >
-              <span className="text-gray-800">{store}</span>
+              <span className="text-gray-800">{site.name}</span>
               <div className="flex items-center">
                 <span
                   className={`font-bold ${
-                    store === "파페치" ? "text-green-500" : "text-gray-900"
+                    price === product.lowest_price ? "text-green-500" : "text-gray-900"
                   }`}
                 >
                   {price.toLocaleString()}원
                 </span>
                 <RightIcon className="w-5 h-5 text-gray-400 ml-2" />
               </div>
-            </div>
+            </a>
           ))}
         </div>
-        <button className="w-full bg-[#EDFEEE] text-primary font-bold py-3 px-4 rounded-lg mt-4">
-          최저가 사러 가기
-        </button>
+        {product.sorted_prices.length > 0 && (
+          <a
+            href={product.sorted_prices[0].url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#EDFEEE] text-primary font-bold py-3 px-4 rounded-lg mt-4 block text-center"
+          >
+            최저가 사러 가기
+          </a>
+        )}
       </div>
 
       <div className="w-full h-[8px] bg-gray-100" />
@@ -206,9 +229,16 @@ export default async function ProductDetailPage({
       </div> */}
 
       <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-white max-w-[500px] mx-auto">
-        <button className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg">
-          구매하러 가기
-        </button>
+        {product.sorted_prices.length > 0 && (
+          <a
+            href={product.sorted_prices[0].url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-green-500 text-white font-bold py-3 px-2 rounded-lg block text-center"
+          >
+            구매하러 가기
+          </a>
+        )}
       </div>
     </div>
   );
