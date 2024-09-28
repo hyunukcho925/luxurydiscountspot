@@ -104,15 +104,15 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="px-4 py-6">
-          <p className="text-lg text-gray-600 mb-1">{product.brands.name_en}</p>
-          <h1 className="text-2xl font-bold mb-2">
+          <p className="text-lg font-bold text-gray-800 mb-2">{product.brands.name_en}</p>
+          <h1 className="text-2xl font-medium mb-4 text-gray-800">
             {product.brands.name_ko} {""} {product.name}
           </h1>
           <div className="flex items-center gap-2">
             <h2 className="text-sm bg-[#EDFEEE] text-primary font-bold p-1 rounded-md">
               최저가
             </h2>
-            <p className="text-lg text-primary font-bold">
+            <p className="text-xl text-primary font-bold">
               {product.lowest_price?.toLocaleString()}원
             </p>
           </div>
@@ -203,7 +203,7 @@ export default async function ProductDetailPage({
               </p>
             </div>
             <div className="flex justify-between border-b border-gray-100 py-4">
-              <h3 className="text-gray-800">디자이너 컬러명</h3>
+              <h3 className="text-gray-800">컬러명</h3>
               <p className="text-gray-800 font-semibold">
                 {product.designer_color}
               </p>
