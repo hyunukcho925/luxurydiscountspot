@@ -104,17 +104,15 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="px-4 py-6">
-          <div className="text-base text-gray-600 mb-1">
-            {product.brands.name_en}
-          </div>
+          <p className="text-lg text-gray-600 mb-1">{product.brands.name_en}</p>
           <h1 className="text-2xl font-bold mb-2">
             {product.brands.name_ko} {""} {product.name}
           </h1>
           <div className="flex items-center gap-2">
-            <p className="text-sm bg-[#EDFEEE] text-primary font-bold p-1 rounded-md">
+            <h2 className="text-sm bg-[#EDFEEE] text-primary font-bold p-1 rounded-md">
               최저가
-            </p>
-            <p className="text-lg font-bold">
+            </h2>
+            <p className="text-lg text-primary font-bold">
               {product.lowest_price?.toLocaleString()}원
             </p>
           </div>
@@ -123,99 +121,99 @@ export default async function ProductDetailPage({
         <div className="w-full h-[8px] bg-gray-100" />
 
         <div className="px-4 py-6">
+          <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
+          <div>
+            {product.sorted_prices.map(({ site, price, url }) => (
+              <a
+                key={site.id}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex justify-between items-center border-b border-gray-100 py-5"
+              >
+                <div className="flex items-center">
+                  <div className="w-8 h-8 mr-3 relative">
+                    <Image
+                      src={site.image_url}
+                      alt={site.name}
+                      fill
+                      style={{ objectFit: "contain" }}
+                      className="rounded-full border border-gray-100"
+                    />
+                  </div>
+                  <span className="text-gray-800 font-bold">{site.name}</span>
+                </div>
+                <div className="flex items-center">
+                  <span
+                    className={`font-bold ${
+                      price === product.lowest_price
+                        ? "text-green-500"
+                        : "text-gray-900"
+                    }`}
+                  >
+                    {price.toLocaleString()}원
+                  </span>
+                  <RightIcon className="w-5 h-5 text-gray-400 ml-2" />
+                </div>
+              </a>
+            ))}
+          </div>
+          {product.sorted_prices.length > 0 && (
+            <a
+              href={product.sorted_prices[0].url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-[#EDFEEE] text-primary font-bold py-3 px-4 rounded-lg mt-4 block text-center"
+            >
+              최저가 사러 가기
+            </a>
+          )}
+        </div>
+
+        <div className="w-full h-[8px] bg-gray-100" />
+
+        <div className="px-4 py-6">
           <h2 className="text-xl font-semibold mb-4">상품 정보</h2>
 
-          <div className="space-y-3">
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+          <div>
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">브랜드</h3>
               <p className="text-gray-800 font-semibold">
                 {product.brands.name_ko} ({product.brands.name_en})
               </p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">상품명</h3>
               <p className="text-gray-800 font-semibold">{product.name}</p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">소재</h3>
               <p className="text-gray-800 font-semibold">{product.material}</p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">관리방법</h3>
               <p className="text-gray-800 font-semibold">
                 {product.care_instructions}
               </p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">제조국</h3>
               <p className="text-gray-800 font-semibold">
                 {product.country_of_origin}
               </p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">디자이너 컬러명</h3>
               <p className="text-gray-800 font-semibold">
                 {product.designer_color}
               </p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 pb-4">
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">안감</h3>
-              <p className="text-gray-800 font-semibold">
-                {product.lining}
-              </p>
+              <p className="text-gray-800 font-semibold">{product.lining}</p>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="w-full h-[8px] bg-gray-100" />
-
-      <div className="px-4 py-6">
-        <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
-        <div>
-          {product.sorted_prices.map(({ site, price, url }) => (
-            <a
-              key={site.id}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex justify-between items-center border-b border-gray-100 py-5"
-            >
-              <div className="flex items-center">
-                <div className="w-8 h-8 mr-3 relative">
-                  <Image
-                    src={site.image_url}
-                    alt={site.name}
-                    fill
-                    style={{ objectFit: "contain" }}
-                    className="rounded-full border border-gray-100"
-                  />
-                </div>
-                <span className="text-gray-800 font-bold">{site.name}</span>
-              </div>
-              <div className="flex items-center">
-                <span
-                  className={`font-bold ${
-                    price === product.lowest_price ? "text-green-500" : "text-gray-900"
-                  }`}
-                >
-                  {price.toLocaleString()}원
-                </span>
-                <RightIcon className="w-5 h-5 text-gray-400 ml-2" />
-              </div>
-            </a>
-          ))}
-        </div>
-        {product.sorted_prices.length > 0 && (
-          <a
-            href={product.sorted_prices[0].url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full bg-[#EDFEEE] text-primary font-bold py-3 px-4 rounded-lg mt-4 block text-center"
-          >
-            최저가 사러 가기
-          </a>
-        )}
       </div>
 
       <div className="w-full h-[8px] bg-gray-100" />
