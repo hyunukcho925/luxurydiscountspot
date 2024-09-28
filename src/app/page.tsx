@@ -9,10 +9,49 @@ import ProductCard from "@/components/ProductCard";
 interface Product {
   id: string;
   brand_name_ko: string;
+  brand_name_en: string;
   product_name: string;
   product_name_en: string;
   image_url: string;
   productNumber?: string;
+  lowest_price?: number;
+}
+
+interface Brand {
+  name_en: string;
+  name_ko: string;
+}
+
+interface MainCategory {
+  name: string;
+}
+
+interface SubCategory {
+  name: string;
+  main_categories: MainCategory;
+}
+
+interface ProductCategory {
+  sub_categories: SubCategory;
+}
+
+interface PriceCrawl {
+  price: number | null;
+}
+
+interface CrawlTarget {
+  price_crawls: PriceCrawl[];
+}
+
+interface SupabaseProduct {
+  id: string;
+  name: string;
+  name_en: string;
+  image_url: string;
+  product_number?: string;
+  brands: Brand;
+  product_categories: ProductCategory;
+  crawl_targets: CrawlTarget[];
 }
 
 async function getHotProducts(): Promise<Product[]> {
@@ -27,6 +66,11 @@ async function getHotProducts(): Promise<Product[]> {
           name,
           main_categories (name)
         )
+      ),
+      crawl_targets (
+        price_crawls (
+          price
+        )
       )
     `
     )
@@ -37,14 +81,26 @@ async function getHotProducts(): Promise<Product[]> {
     return [];
   }
 
-  return data.map((product) => ({
-    id: product.id,
-    brand_name_ko: product.brands?.name_ko || "",
-    product_name: product.name,
-    product_name_en: product.name_en,
-    image_url: product.image_url,
-    productNumber: product.product_number,
-  }));
+  return (data as SupabaseProduct[]).map((product) => {
+    const prices = product.crawl_targets
+      .flatMap((target) => 
+        target.price_crawls.map((crawl) => crawl.price)
+      )
+      .filter((price): price is number => price !== null);
+    
+    const lowest_price = prices.length > 0 ? Math.min(...prices) : undefined;
+
+    return {
+      id: product.id,
+      brand_name_ko: product.brands.name_ko,
+      brand_name_en: product.brands.name_en,
+      product_name: product.name,
+      product_name_en: product.name_en,
+      image_url: product.image_url,
+      productNumber: product.product_number,
+      lowest_price,
+    };
+  });
 }
 
 export default async function Page() {
@@ -83,10 +139,11 @@ export default async function Page() {
               <ProductCard
                 key={product.id}
                 id={product.id}
-                brand_name_ko={product.brand_name_ko}
+                brand_name_en={product.brand_name_en}
                 product_name={product.product_name}
                 product_name_en={product.product_name_en}
                 image_url={product.image_url}
+                lowest_price={product.lowest_price}
               />
             ))}
           </div>

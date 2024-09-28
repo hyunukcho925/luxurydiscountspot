@@ -13,10 +13,12 @@ interface SubCategory {
 interface Product {
   id: string;
   brand_name_ko: string;
+  brand_name_en: string;
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
   productNumber?: string;
+  lowest_price?: number;
 };
 
 interface TabGroupProps {
@@ -60,10 +62,11 @@ export function TabGroup({
                 <ProductCard
                   key={product.id}
                   id={product.id}
-                  brand_name_ko={product.brand_name_ko}
+                  brand_name_en={product.brand_name_en}
                   product_name={product.product_name}
                   product_name_en={product.product_name_en}
                   image_url={product.image_url}
+                  lowest_price={product.lowest_price}
                 />
               ))}
             </div>

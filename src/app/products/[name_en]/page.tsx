@@ -5,7 +5,7 @@ import ProductHeader from "@/components/header/ProductHeader";
 import Image from "next/image";
 import RightIcon from "@/components/icon/RightIcon";
 // import dynamic from 'next/dynamic';
-import { getProduct, ProductWithPrices, PriceInfo } from "../../../lib/products";
+import { getProduct, ProductWithPrices } from "../../../lib/products";
 
 // PriceInfo 인터페이스 추가
 // interface PriceInfo {
@@ -105,7 +105,7 @@ export default async function ProductDetailPage({
 
         <div className="px-4 py-6">
           <div className="text-base text-gray-600 mb-1">
-            {product.brands.name_ko}
+            {product.brands.name_en}
           </div>
           <h1 className="text-2xl font-bold mb-2">
             {product.brands.name_ko} {""} {product.name}
@@ -173,7 +173,7 @@ export default async function ProductDetailPage({
       <div className="px-4 py-6">
         <h2 className="text-xl font-semibold mb-4">현재 최저가</h2>
         <div>
-          {(product.sorted_prices as PriceInfo[]).map(({ site, price, url }) => (
+          {product.sorted_prices.map(({ site, price, url }) => (
             <a
               key={site.id}
               href={url}
@@ -181,7 +181,18 @@ export default async function ProductDetailPage({
               rel="noopener noreferrer"
               className="flex justify-between items-center border-b border-gray-100 py-5"
             >
-              <span className="text-gray-800">{site.name}</span>
+              <div className="flex items-center">
+                <div className="w-8 h-8 mr-3 relative">
+                  <Image
+                    src={site.image_url}
+                    alt={site.name}
+                    fill
+                    style={{ objectFit: "contain" }}
+                    className="rounded-full border border-gray-100"
+                  />
+                </div>
+                <span className="text-gray-800 font-bold">{site.name}</span>
+              </div>
               <div className="flex items-center">
                 <span
                   className={`font-bold ${

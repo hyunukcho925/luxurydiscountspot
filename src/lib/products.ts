@@ -97,15 +97,22 @@ export async function getProduct(nameEn: string): Promise<ProductWithPrices | nu
     const product = data as unknown as Product;
     const sortedPrices = product.crawl_targets
       .filter(target => target.price_crawls.length > 0)
-      .map(target => ({
-        site: target.site,
-        price: target.price_crawls[0].price,
-        url: target.encoded_product_url,
-        crawled_at: target.price_crawls[0].crawled_at,
-      }))
+      .map(target => {
+        // 가장 최신의 price_crawl 찾기
+        const latestPriceCrawl = target.price_crawls.reduce((latest, current) => 
+          new Date(current.crawled_at) > new Date(latest.crawled_at) ? current : latest
+        );
+        
+        return {
+          site: target.site,
+          price: latestPriceCrawl.price,
+          url: target.encoded_product_url,
+          crawled_at: latestPriceCrawl.crawled_at,
+        };
+      })
       .sort((a, b) => a.price - b.price);
 
-    const lowestPrice = sortedPrices[0]?.price;
+    const lowestPrice = sortedPrices.length > 0 ? sortedPrices[0].price : undefined;
 
     return {
       ...product,
