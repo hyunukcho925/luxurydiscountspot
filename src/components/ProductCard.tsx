@@ -21,7 +21,6 @@ export interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   brand_name_en,
-  brand_name_ko,
   product_name,
   product_name_en,
   image_url,
@@ -43,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <div className="p-4 flex-grow">
           <h3 className="text-base font-bold text-gray-800 mb-1">
-            {brand_name_ko || brand_name_en}
+            {brand_name_en}
           </h3>
           <h2 className="text-base font-medium text-gray-800 mb-1">
             {product_name}
