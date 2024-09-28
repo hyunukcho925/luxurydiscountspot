@@ -110,12 +110,12 @@ export default async function Page() {
     <div className="flex flex-col min-h-screen-56">
       <MainHeader />
       <main className="flex-grow px-4 py-6">
-        <h1 className="text-2xl font-extrabold mb-4 text-center leading-normal">
+        <h1 className="text-2xl font-extrabold mb-6 text-center leading-normal">
           <span className="text-black-500">원하는 명품 직구, </span>
           <br />
           <span className="text-primary">어디에서 가장 저렴할까요?</span>
         </h1>
-        <div className="relative mb-6">
+        <div className="relative mb-12">
           <Link href="/search" className="block">
             <input
               type="text"
