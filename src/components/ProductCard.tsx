@@ -32,12 +32,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
       className="block mb-4"
     >
       <div className="rounded-lg overflow-hidden flex items-center">
-        <div className="border rounded-lg relative flex-shrink-0 bg-gray-100 size-32">
+        <div className="rounded-lg relative flex-shrink-0 bg-gray-100 size-32 flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-gray-100" />
           <Image
             src={image_url}
             alt={product_name}
             fill
-            style={{ objectFit: "cover" }}
+            sizes="128px"
+            className="object-contain p-2"
           />
         </div>
         <div className="p-4 flex-grow">
