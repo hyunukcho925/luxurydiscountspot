@@ -49,7 +49,7 @@ export interface ProductWithPrices extends Product {
     url: string;
     crawled_at: string;
   }[];
-  lowest_price: number | undefined;
+  lowest_price: number | null;  // undefined 대신 null 사용
 }
 
 export async function getProduct(nameEn: string): Promise<ProductWithPrices | null> {
@@ -112,7 +112,7 @@ export async function getProduct(nameEn: string): Promise<ProductWithPrices | nu
       })
       .sort((a, b) => a.price - b.price);
 
-    const lowestPrice = sortedPrices.length > 0 ? sortedPrices[0].price : undefined;
+    const lowestPrice = sortedPrices.length > 0 ? sortedPrices[0].price : null;
 
     return {
       ...product,

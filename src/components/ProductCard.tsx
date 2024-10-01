@@ -10,7 +10,7 @@ export interface ProductCardProps {
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
-  lowest_price?: number;
+  lowest_price?: number | null;  // null을 허용하도록 변경
   material?: string;
   care_instructions?: string;
   country_of_origin?: string;
@@ -49,7 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <h2 className="text-base font-medium text-gray-800 mb-1">
             {product_name}
           </h2>
-          {lowest_price !== undefined && (
+          {lowest_price !== undefined && lowest_price !== null && (
             <p className="text-base font-bold text-primary">
               {lowest_price.toLocaleString()}원
             </p>
