@@ -92,7 +92,7 @@ export default async function ProductDetailPage({
     <div className="pb-4">
       <ProductHeader />
       <div>
-        <div className="bg-gray-100">
+        <div className="bg-gray-100 py-6">
           <div className="relative w-[60%] pt-[60%] mx-auto">
             <Image
               src={product.image_url}
