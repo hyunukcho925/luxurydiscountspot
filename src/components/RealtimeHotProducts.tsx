@@ -11,7 +11,7 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: string;
-  product_number: string; // 변경: productNumber를 product_number로 변경
+  product_number: string;
   lowest_price?: number | null;
 }
 
@@ -33,7 +33,7 @@ interface SupabaseProduct {
   name: string;
   name_en: string;
   image_url: string;
-  product_number: string; // 변경: product_number 추가
+  product_number: string;
   brands: Brand;
   crawl_targets: CrawlTarget[];
 }
@@ -123,7 +123,7 @@ export default function RealtimeHotProducts({
       product_name: supabaseProduct.name,
       product_name_en: supabaseProduct.name_en,
       image_url: supabaseProduct.image_url,
-      product_number: supabaseProduct.product_number, // 변경: product_number 사용
+      product_number: supabaseProduct.product_number,
       lowest_price,
     };
   }
@@ -140,7 +140,7 @@ export default function RealtimeHotProducts({
           product_name_en={product.product_name_en}
           image_url={product.image_url}
           lowest_price={product.lowest_price}
-          product_number={product.product_number} // 추가: product_number 전달
+          product_number={product.product_number}
         />
       ))}
     </div>

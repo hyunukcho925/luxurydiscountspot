@@ -14,7 +14,7 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: string;
-  productNumber?: string;
+  product_number: string; // 변경: 옵셔널 제거
   lowest_price?: number | null;
 }
 
@@ -36,7 +36,7 @@ interface SupabaseProduct {
   name: string;
   name_en: string;
   image_url: string;
-  product_number?: string;
+  product_number: string; // 변경: 옵셔널 제거
   brands: Brand;
   crawl_targets: CrawlTarget[];
 }
@@ -65,11 +65,9 @@ async function getHotProducts(): Promise<Product[]> {
 
   return (data as SupabaseProduct[]).map((product) => {
     const prices = product.crawl_targets
-      .flatMap((target) => 
-        target.price_crawls.map((crawl) => crawl.price)
-      )
+      .flatMap((target) => target.price_crawls.map((crawl) => crawl.price))
       .filter((price): price is number => price !== null);
-    
+
     const lowest_price = prices.length > 0 ? Math.min(...prices) : null;
 
     return {
@@ -79,7 +77,7 @@ async function getHotProducts(): Promise<Product[]> {
       product_name: product.name,
       product_name_en: product.name_en,
       image_url: product.image_url,
-      productNumber: product.product_number,
+      product_number: product.product_number, // 변경: productNumber를 product_number로
       lowest_price,
     };
   });
