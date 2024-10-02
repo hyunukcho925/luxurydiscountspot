@@ -1,10 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import MainHeader from "@/components/header/MainHeader";
 import SearchIcon from "@/components/icon/SearchIcon";
-import ProductCard from "@/components/ProductCard";
+import RealtimeHotProducts from "@/components/RealtimeHotProducts";
 
 interface Product {
   id: string;
@@ -14,25 +15,12 @@ interface Product {
   product_name_en: string;
   image_url: string;
   productNumber?: string;
-  lowest_price?: number;
+  lowest_price?: number | null;
 }
 
 interface Brand {
   name_en: string;
   name_ko: string;
-}
-
-interface MainCategory {
-  name: string;
-}
-
-interface SubCategory {
-  name: string;
-  main_categories: MainCategory;
-}
-
-interface ProductCategory {
-  sub_categories: SubCategory;
 }
 
 interface PriceCrawl {
@@ -50,23 +38,17 @@ interface SupabaseProduct {
   image_url: string;
   product_number?: string;
   brands: Brand;
-  product_categories: ProductCategory;
   crawl_targets: CrawlTarget[];
 }
 
 async function getHotProducts(): Promise<Product[]> {
+  const supabase = createServerComponentClient({ cookies });
   const { data, error } = await supabase
     .from("products")
     .select(
       `
       *,
       brands (name_en, name_ko),
-      product_categories (
-        sub_categories (
-          name,
-          main_categories (name)
-        )
-      ),
       crawl_targets (
         price_crawls (
           price
@@ -88,7 +70,7 @@ async function getHotProducts(): Promise<Product[]> {
       )
       .filter((price): price is number => price !== null);
     
-    const lowest_price = prices.length > 0 ? Math.min(...prices) : undefined;
+    const lowest_price = prices.length > 0 ? Math.min(...prices) : null;
 
     return {
       id: product.id,
@@ -134,19 +116,7 @@ export default async function Page() {
             <span className="mr-1">⚡</span> 지금 가장 HOT한 상품
           </h2>
 
-          <div>
-            {hotProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                brand_name_en={product.brand_name_en}
-                product_name={product.product_name}
-                product_name_en={product.product_name_en}
-                image_url={product.image_url}
-                lowest_price={product.lowest_price}
-              />
-            ))}
-          </div>
+          <RealtimeHotProducts initialProducts={hotProducts} />
         </div>
       </main>
       <BottomNavigation />
