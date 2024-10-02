@@ -1,41 +1,27 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { Metadata } from 'next';
+import { Metadata } from "next";
 import ProductHeader from "@/components/header/ProductHeader";
 import Image from "next/image";
 import RightIcon from "@/components/icon/RightIcon";
-// import dynamic from 'next/dynamic';
 import { getProduct, ProductWithPrices } from "../../../lib/products";
 
-// PriceInfo 인터페이스 추가
-// interface PriceInfo {
-//   site: {
-//     id: string;
-//     name: string;
-//     image_url: string;
-//   };
-//   price: number;
-//   url: string;
-//   crawled_at: string;
-// }
-
-// const PriceHistoryChart = dynamic(
-//   () => import("@/containers/PriceHistoryChart"),
-//   { ssr: false }
-// );
-
-export async function generateMetadata(
-  { params }: { params: { name_en: string } }
-): Promise<Metadata> {
-  const product = await getProduct(params.name_en);
+export async function generateMetadata({
+  params,
+}: {
+  params: { name_en_with_number: string };
+}): Promise<Metadata> {
+  const product = await getProduct(params.name_en_with_number);
 
   if (!product) {
     return {
-      title: '상품을 찾을 수 없습니다',
+      title: "상품을 찾을 수 없습니다",
     };
   }
 
-  const productUrl = `https://luxurydispot.com/products/${encodeURIComponent(params.name_en)}`;
+  const productUrl = `https://luxurydispot.com/products/${encodeURIComponent(
+    params.name_en_with_number
+  )}`;
 
   return {
     title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
@@ -44,15 +30,17 @@ export async function generateMetadata(
       title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
       description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요. 럭셔리 디스팟에서 최저가로 구매하세요.`,
       url: productUrl,
-      siteName: '럭셔리 디스팟',
-      images: [{ 
-        url: product.image_url,
-        width: 800,
-        height: 800,
-        alt: `${product.brands.name_ko} ${product.name} 이미지`
-      }],
-      locale: 'ko_KR',
-      type: 'website',
+      siteName: "럭셔리 디스팟",
+      images: [
+        {
+          url: product.image_url,
+          width: 800,
+          height: 800,
+          alt: `${product.brands.name_ko} ${product.name} 이미지`,
+        },
+      ],
+      locale: "ko_KR",
+      type: "website",
     },
     alternates: {
       canonical: productUrl,
@@ -62,14 +50,14 @@ export async function generateMetadata(
       follow: true,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: `${product.brands.name_ko} ${product.name} | 럭셔리 디스팟`,
       description: `${product.brands.name_ko} ${product.name}의 상세 정보와 최저가 정보를 확인하세요. 럭셔리 디스팟에서 최저가로 구매하세요.`,
       images: [product.image_url],
     },
     other: {
-      'price': `${product.lowest_price?.toLocaleString()}원`,
-      'brand': product.brands.name_ko,
+      price: `${product.lowest_price?.toLocaleString()}원`,
+      brand: product.brands.name_ko,
     },
   };
 }
@@ -77,9 +65,11 @@ export async function generateMetadata(
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { name_en: string };
+  params: { name_en_with_number: string };
 }) {
-  const product = await getProduct(params.name_en) as ProductWithPrices | null;
+  const product = (await getProduct(
+    params.name_en_with_number
+  )) as ProductWithPrices | null;
   console.log("Params:", params);
   console.log("Product:", product);
 
@@ -104,7 +94,9 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="px-4 py-6">
-          <p className="text-lg font-bold text-gray-800 mb-2">{product.brands.name_en}</p>
+          <p className="text-lg font-bold text-gray-800 mb-2">
+            {product.brands.name_en}
+          </p>
           <h1 className="text-2xl font-medium mb-4 text-gray-800">
             {product.brands.name_ko} {""} {product.name}
           </h1>
@@ -212,30 +204,15 @@ export default async function ProductDetailPage({
               <h3 className="text-gray-800">안감</h3>
               <p className="text-gray-800 font-semibold">{product.lining}</p>
             </div>
+            <div className="flex justify-between border-b border-gray-100 py-4">
+              <h3 className="text-gray-800">제품 번호</h3>
+              <p className="text-gray-800 font-semibold">
+                {product.product_number}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="w-full h-[8px] bg-gray-100" />
-
-      {/* <div className="px-4 py-6">
-        <h2 className="text-xl font-semibold mb-4">최저가 히스토리</h2>
-        <PriceHistoryChart />
-        <div className="mt-4 space-y-2 border border-gray-200 p-4 rounded-lg">
-          <div className="flex justify-between border-b border-gray-100 pb-3">
-            <h3 className="text-gray-600">역대 최저가</h3>
-            <p className="font-bold text-primary">3,124,000원</p>
-          </div>
-          <div className="flex justify-between border-b border-gray-100 pb-3">
-            <h3 className="text-gray-600">평균가</h3>
-            <p className="font-bold">4,288,000원</p>
-          </div>
-          <div className="flex justify-between">
-            <h3 className="text-gray-600 ">역대 최고가</h3>
-            <p className="font-bold text-secondary">8,288,000원</p>
-          </div>
-        </div>
-      </div> */}
 
       <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-white max-w-[500px] mx-auto">
         {product.sorted_prices.length > 0 && (

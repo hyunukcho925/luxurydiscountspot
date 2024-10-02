@@ -80,10 +80,11 @@ export async function getProductsByCategory(subCategoryId: string) {
     product_name: product.name,
     product_name_en: product.name_en,
     image_url: product.image_url,
-    productNumber: product.product_number,
-    lowest_price: product.crawl_targets
-      ?.flatMap((target) => target.price_crawls.map((crawl) => crawl.price))
-      .reduce((min, price) => Math.min(min, price), Infinity) || undefined,
-    sub_category_id: subCategoryId
+    product_number: product.product_number, // 변경: productNumber를 product_number로 변경
+    lowest_price:
+      product.crawl_targets
+        ?.flatMap((target) => target.price_crawls.map((crawl) => crawl.price))
+        .reduce((min, price) => Math.min(min, price), Infinity) || undefined,
+    sub_category_id: subCategoryId,
   }));
 }

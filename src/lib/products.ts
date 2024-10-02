@@ -36,6 +36,7 @@ interface Product {
   country_of_origin: string;
   designer_color: string;
   lining: string;
+  product_number: string; // 추가된 부분
 }
 
 export interface ProductWithPrices extends Product {
@@ -49,16 +50,26 @@ export interface ProductWithPrices extends Product {
     url: string;
     crawled_at: string;
   }[];
-  lowest_price: number | null;  // undefined 대신 null 사용
+  lowest_price: number | null;
 }
 
-export async function getProduct(nameEn: string): Promise<ProductWithPrices | null> {
+export async function getProduct(
+  nameEnWithNumber: string
+): Promise<ProductWithPrices | null> {
+  // URL에서 제품 이름과 번호를 분리합니다.
+  const [nameEn, productNumber] = nameEnWithNumber.split("-");
   const decodedNameEn = decodeURIComponent(nameEn);
-  console.log("Fetching product with name_en:", decodedNameEn);
-  
+  console.log(
+    "Fetching product with name_en:",
+    decodedNameEn,
+    "and product_number:",
+    productNumber
+  );
+
   const { data, error } = await supabase
     .from("products")
-    .select(`
+    .select(
+      `
       *,
       brands (name_en, name_ko),
       product_categories (
@@ -81,8 +92,10 @@ export async function getProduct(nameEn: string): Promise<ProductWithPrices | nu
           crawled_at
         )
       )
-    `)
+    `
+    )
     .eq("name_en", decodedNameEn)
+    .eq("product_number", productNumber) // 제품 번호로 추가 필터링
     .single();
 
   console.log("Fetched data:", data);
@@ -96,13 +109,14 @@ export async function getProduct(nameEn: string): Promise<ProductWithPrices | nu
   if (data) {
     const product = data as unknown as Product;
     const sortedPrices = product.crawl_targets
-      .filter(target => target.price_crawls.length > 0)
-      .map(target => {
-        // 가장 최신의 price_crawl 찾기
-        const latestPriceCrawl = target.price_crawls.reduce((latest, current) => 
-          new Date(current.crawled_at) > new Date(latest.crawled_at) ? current : latest
+      .filter((target) => target.price_crawls.length > 0)
+      .map((target) => {
+        const latestPriceCrawl = target.price_crawls.reduce((latest, current) =>
+          new Date(current.crawled_at) > new Date(latest.crawled_at)
+            ? current
+            : latest
         );
-        
+
         return {
           site: target.site,
           price: latestPriceCrawl.price,

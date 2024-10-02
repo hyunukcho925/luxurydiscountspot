@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import SearchHeader from "@/components/header/SearchHeader";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/lib/supabaseClient";
-import { Suspense } from 'react';
+import { Suspense } from "react";
 
 interface Product {
   id: string;
@@ -15,6 +15,7 @@ interface Product {
   product_name_en: string | null;
   image_url: string | null;
   lowest_price: number;
+  product_number: string; // 추가: product_number 필드
 }
 
 export default function SearchPage() {
@@ -92,6 +93,7 @@ function SearchContent() {
                 product_name_en={product.product_name_en || ""}
                 image_url={product.image_url || ""}
                 lowest_price={product.lowest_price}
+                product_number={product.product_number} // 추가: product_number 전달
               />
             ))}
           </div>

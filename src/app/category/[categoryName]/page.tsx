@@ -27,7 +27,7 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: string;
-  productNumber?: string;
+  product_number: string; // 변경: productNumber를 product_number로 변경하고 필수로 만듦
   sub_category_id: string;
   lowest_price?: number;
 }
@@ -39,8 +39,9 @@ async function fetchData(categoryName: string): Promise<{
   products: Product[];
 }> {
   const mainCategories: MainCategory[] = await getMainCategories();
-  const selectedMainCategory =
-    mainCategories.find((cat) => cat.name === decodeURIComponent(categoryName));
+  const selectedMainCategory = mainCategories.find(
+    (cat) => cat.name === decodeURIComponent(categoryName)
+  );
 
   if (!selectedMainCategory) {
     throw new Error("Main category not found");

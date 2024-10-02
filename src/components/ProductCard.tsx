@@ -10,13 +10,8 @@ export interface ProductCardProps {
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
-  lowest_price?: number | null;  // null을 허용하도록 변경
-  material?: string;
-  care_instructions?: string;
-  country_of_origin?: string;
-  designer_color?: string;
-  lining?: string;
-  product_number?: string;
+  lowest_price?: number | null;
+  product_number: string; // 추가: product_number 필드
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -25,10 +20,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product_name_en,
   image_url,
   lowest_price,
+  product_number, // 추가: product_number 매개변수
 }) => {
   return (
     <Link
-      href={`/products/${encodeURIComponent(product_name_en)}`}
+      href={`/products/${encodeURIComponent(
+        product_name_en
+      )}-${product_number}`} // URL 구조 변경
       className="block mb-4"
     >
       <div className="rounded-lg overflow-hidden flex items-center">

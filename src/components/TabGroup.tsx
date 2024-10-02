@@ -8,7 +8,7 @@ import { StaticImageData } from "next/image";
 interface SubCategory {
   id: string;
   name: string;
-};
+}
 
 interface Product {
   id: string;
@@ -17,16 +17,16 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
-  productNumber?: string;
+  product_number: string; // 변경: productNumber를 product_number로 변경
   lowest_price?: number;
   sub_category_id: string;
-};
+}
 
 interface TabGroupProps {
   subCategories: SubCategory[];
   selectedSubCategory: SubCategory;
   products: Product[];
-};
+}
 
 export function TabGroup({
   subCategories,
@@ -60,7 +60,7 @@ export function TabGroup({
           <Tab.Panel key={category.id}>
             <div>
               {products
-                .filter(product => product.sub_category_id === category.id)
+                .filter((product) => product.sub_category_id === category.id)
                 .map((product: Product) => (
                   <ProductCard
                     key={product.id}
@@ -68,9 +68,10 @@ export function TabGroup({
                     brand_name_en={product.brand_name_en}
                     brand_name_ko={product.brand_name_ko}
                     product_name={product.product_name}
-                    product_name_en={product.product_name_en || ""}
-                    image_url={product.image_url || ""}
+                    product_name_en={product.product_name_en}
+                    image_url={product.image_url}
                     lowest_price={product.lowest_price}
+                    product_number={product.product_number} // 추가: product_number 전달
                   />
                 ))}
             </div>

@@ -11,7 +11,7 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: string;
-  productNumber?: string;
+  product_number: string; // 변경: productNumber를 product_number로 변경
   lowest_price?: number | null;
 }
 
@@ -33,7 +33,7 @@ interface SupabaseProduct {
   name: string;
   name_en: string;
   image_url: string;
-  product_number?: string;
+  product_number: string; // 변경: product_number 추가
   brands: Brand;
   crawl_targets: CrawlTarget[];
 }
@@ -57,8 +57,7 @@ export default function RealtimeHotProducts({
           table: "products",
         },
         (payload) => {
-          // 변경된 제품 정보를 가져옵니다.
-          if (payload.new && 'id' in payload.new) {
+          if (payload.new && "id" in payload.new) {
             getUpdatedProduct(payload.new.id).then((updatedProduct) => {
               if (updatedProduct) {
                 setProducts((currentProducts) => {
@@ -66,12 +65,10 @@ export default function RealtimeHotProducts({
                     (p) => p.id === updatedProduct.id
                   );
                   if (index !== -1) {
-                    // 기존 제품 업데이트
                     const newProducts = [...currentProducts];
                     newProducts[index] = updatedProduct;
                     return newProducts;
                   } else {
-                    // 새 제품 추가 (필요한 경우)
                     return [...currentProducts, updatedProduct];
                   }
                 });
@@ -126,7 +123,7 @@ export default function RealtimeHotProducts({
       product_name: supabaseProduct.name,
       product_name_en: supabaseProduct.name_en,
       image_url: supabaseProduct.image_url,
-      productNumber: supabaseProduct.product_number,
+      product_number: supabaseProduct.product_number, // 변경: product_number 사용
       lowest_price,
     };
   }
@@ -138,10 +135,12 @@ export default function RealtimeHotProducts({
           key={product.id}
           id={product.id}
           brand_name_en={product.brand_name_en}
+          brand_name_ko={product.brand_name_ko}
           product_name={product.product_name}
           product_name_en={product.product_name_en}
           image_url={product.image_url}
           lowest_price={product.lowest_price}
+          product_number={product.product_number} // 추가: product_number 전달
         />
       ))}
     </div>
