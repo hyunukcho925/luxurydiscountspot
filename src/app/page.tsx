@@ -14,7 +14,7 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: string;
-  product_number: string; // 변경: 옵셔널 제거
+  product_number: string;
   lowest_price?: number | null;
 }
 

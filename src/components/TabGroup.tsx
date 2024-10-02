@@ -1,13 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
 import ProductCard from "./ProductCard";
 import { StaticImageData } from "next/image";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { getSubCategories, getProductsByCategory } from "@/lib/categories";
 
 interface SubCategory {
   id: string;
   name: string;
+  main_category_id: string;
 }
 
 interface Product {
@@ -17,27 +20,100 @@ interface Product {
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
-  product_number: string; // 변경: productNumber를 product_number로 변경
+  product_number: string;
   lowest_price?: number;
   sub_category_id: string;
 }
 
 interface TabGroupProps {
-  subCategories: SubCategory[];
-  selectedSubCategory: SubCategory;
-  products: Product[];
+  initialSubCategories: SubCategory[];
+  initialSelectedSubCategory: SubCategory;
+  initialProducts: Product[];
 }
 
 export function TabGroup({
-  subCategories,
-  selectedSubCategory,
-  products,
+  initialSubCategories,
+  initialSelectedSubCategory,
+  initialProducts,
 }: TabGroupProps) {
+  const [subCategories, setSubCategories] = useState(initialSubCategories);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(initialSelectedSubCategory);
+  const [products, setProducts] = useState(initialProducts);
+  const [isLoading, setIsLoading] = useState(false);
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    fetchProducts(selectedSubCategory.id);
+
+    const subCategoryChannel = supabase
+      .channel('sub_categories')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'sub_categories' },
+        () => {
+          fetchSubCategories();
+        }
+      )
+      .subscribe();
+
+    const productsChannel = supabase
+      .channel('products')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'products' },
+        () => {
+          fetchProducts(selectedSubCategory.id);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subCategoryChannel);
+      supabase.removeChannel(productsChannel);
+    };
+  }, [supabase, selectedSubCategory.id]);
+
+  const fetchSubCategories = async () => {
+    try {
+      const updatedSubCategories = await getSubCategories(selectedSubCategory.main_category_id);
+      setSubCategories(updatedSubCategories);
+      
+      const stillExists = updatedSubCategories.some(cat => cat.id === selectedSubCategory.id);
+      if (!stillExists && updatedSubCategories.length > 0) {
+        setSelectedSubCategory(updatedSubCategories[0]);
+        fetchProducts(updatedSubCategories[0].id);
+      }
+    } catch (error) {
+      console.error("Error fetching sub categories:", error);
+    }
+  };
+
+  const fetchProducts = async (subCategoryId: string) => {
+    setIsLoading(true);
+    try {
+      const updatedProducts = await getProductsByCategory(subCategoryId);
+      console.log("Fetched products:", updatedProducts);
+      setProducts(updatedProducts);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleTabChange = (index: number) => {
+    const newSelectedSubCategory = subCategories[index];
+    setSelectedSubCategory(newSelectedSubCategory);
+    fetchProducts(newSelectedSubCategory.id);
+  };
+
+  console.log("Current products:", products);
+  console.log("Selected sub category:", selectedSubCategory);
+
   return (
     <Tab.Group
       defaultIndex={subCategories.findIndex(
         (cat) => cat.id === selectedSubCategory.id
       )}
+      onChange={handleTabChange}
     >
       <Tab.List className="flex overflow-x-auto whitespace-nowrap">
         {subCategories.map((category: SubCategory) => (
@@ -58,23 +134,30 @@ export function TabGroup({
       <Tab.Panels className="m-4">
         {subCategories.map((category: SubCategory) => (
           <Tab.Panel key={category.id}>
-            <div>
-              {products
-                .filter((product) => product.sub_category_id === category.id)
-                .map((product: Product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    brand_name_en={product.brand_name_en}
-                    brand_name_ko={product.brand_name_ko}
-                    product_name={product.product_name}
-                    product_name_en={product.product_name_en}
-                    image_url={product.image_url}
-                    lowest_price={product.lowest_price}
-                    product_number={product.product_number} // 추가: product_number 전달
-                  />
-                ))}
-            </div>
+            {isLoading ? (
+              <div>로딩 중...</div>
+            ) : (
+              <div>
+                {products
+                  .filter((product) => product.sub_category_id === category.id)
+                  .map((product: Product) => (
+                    <ProductCard
+                      key={product.id}
+                      id={product.id}
+                      brand_name_en={product.brand_name_en}
+                      brand_name_ko={product.brand_name_ko}
+                      product_name={product.product_name}
+                      product_name_en={product.product_name_en}
+                      image_url={product.image_url}
+                      lowest_price={product.lowest_price}
+                      product_number={product.product_number}
+                    />
+                  ))}
+              </div>
+            )}
+            {!isLoading && products.filter((product) => product.sub_category_id === category.id).length === 0 && (
+              <div>이 카테고리에 상품이 없습니다.</div>
+            )}
           </Tab.Panel>
         ))}
       </Tab.Panels>

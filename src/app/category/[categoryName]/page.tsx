@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+
+import React, { useState, useEffect } from "react";
 import ProductListHeader from "@/components/header/ProductListHeader";
 import {
   getMainCategories,
@@ -6,6 +8,7 @@ import {
   getProductsByCategory,
 } from "@/lib/categories";
 import { TabGroup } from "@/components/TabGroup";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface MainCategory {
   id: string;
@@ -32,63 +35,85 @@ interface Product {
   lowest_price?: number;
 }
 
-async function fetchData(categoryName: string): Promise<{
-  mainCategory: MainCategory;
-  subCategories: SubCategory[];
-  selectedSubCategory: SubCategory;
-  products: Product[];
-}> {
-  const mainCategories: MainCategory[] = await getMainCategories();
-  const selectedMainCategory = mainCategories.find(
-    (cat) => cat.name === decodeURIComponent(categoryName)
-  );
-
-  if (!selectedMainCategory) {
-    throw new Error("Main category not found");
-  }
-
-  const subCategories: SubCategory[] = await getSubCategories(
-    selectedMainCategory.id
-  );
-
-  if (subCategories.length === 0) {
-    throw new Error("No subcategories found for the selected main category");
-  }
-
-  const selectedSubCategory = subCategories[0];
-  const products: Product[] = await getProductsByCategory(
-    selectedSubCategory.id
-  );
-
-  return {
-    mainCategory: selectedMainCategory,
-    subCategories,
-    selectedSubCategory,
-    products,
-  };
-}
-
-export default async function CategoryProductListPage({
+function CategoryProductListPage({
   params,
 }: {
   params: { categoryName: string };
 }) {
-  try {
-    const { mainCategory, subCategories, selectedSubCategory, products } =
-      await fetchData(params.categoryName);
+  const [mainCategory, setMainCategory] = useState<MainCategory | null>(null);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-    return (
-      <div>
-        <ProductListHeader categoryName={mainCategory.name} />
-        <TabGroup
-          subCategories={subCategories}
-          selectedSubCategory={selectedSubCategory}
-          products={products}
-        />
-      </div>
-    );
-  } catch (error) {
-    console.error("Error in CategoryProductListPage:", error);
-    return <div>Error loading product list. Please try again later.</div>;
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    fetchData();
+
+    const mainCategoryChannel = supabase
+      .channel('main_categories')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'main_categories' },
+        () => fetchData()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(mainCategoryChannel);
+    };
+  }, [supabase, params.categoryName]);
+
+  const fetchData = async () => {
+    try {
+      const mainCategories: MainCategory[] = await getMainCategories();
+      const selectedMainCategory = mainCategories.find(
+        (cat) => cat.name === decodeURIComponent(params.categoryName)
+      );
+
+      if (!selectedMainCategory) {
+        throw new Error("Main category not found");
+      }
+
+      setMainCategory(selectedMainCategory);
+
+      const subCats: SubCategory[] = await getSubCategories(
+        selectedMainCategory.id
+      );
+
+      if (subCats.length === 0) {
+        throw new Error("No subcategories found for the selected main category");
+      }
+
+      setSubCategories(subCats);
+      setSelectedSubCategory(subCats[0]);
+
+      const prods: Product[] = await getProductsByCategory(subCats[0].id);
+      setProducts(prods);
+    } catch (err) {
+      console.error("Error in fetchData:", err);
+      setError("Error loading product list. Please try again later.");
+    }
+  };
+
+  if (error) {
+    return <div>{error}</div>;
   }
+
+  if (!mainCategory || !selectedSubCategory) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <ProductListHeader categoryName={mainCategory.name} />
+      <TabGroup
+        initialSubCategories={subCategories}
+        initialSelectedSubCategory={selectedSubCategory}
+        initialProducts={products}
+      />
+    </div>
+  );
 }
+
+export default CategoryProductListPage;
