@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import ProductCard from "./ProductCard";
+import ProductCardHorizontal from "./ProductCardHorizontal";
 
 interface Product {
   id: string;
@@ -143,7 +143,7 @@ export default function RealtimeHotProducts({
   return (
     <div>
       {products.map((product) => (
-        <ProductCard
+        <ProductCardHorizontal
           key={product.id}
           id={product.id}
           brand_name_en={product.brand_name_en}

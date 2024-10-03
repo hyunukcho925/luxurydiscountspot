@@ -20,8 +20,10 @@ interface CrawlTarget {
 }
 
 interface Brand {
+  id: string;
   name_en: string;
   name_ko: string;
+  description: string;
 }
 
 interface Product {
@@ -36,7 +38,7 @@ interface Product {
   country_of_origin: string;
   designer_color: string;
   lining: string;
-  product_number: string; // 추가된 부분
+  product_number: string;
 }
 
 export interface ProductWithPrices extends Product {
@@ -76,7 +78,7 @@ export async function getProduct(
     .select(
       `
       *,
-      brands (name_en, name_ko),
+      brands (name_en, name_ko, description),
       product_categories (
         sub_categories (
           name,
@@ -147,6 +149,69 @@ export async function getProduct(
   return null;
 }
 
+export async function getOtherProductsByBrand(brandId: string, currentProductId: string, limit: number = 4): Promise<ProductWithPrices[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      brands!inner (id, name_en, name_ko),
+      crawl_targets (
+        id,
+        encoded_product_url,
+        site:sites (
+          id,
+          name,
+          image_url
+        ),
+        price_crawls (
+          price,
+          currency,
+          crawled_at
+        )
+      )
+    `)
+    .eq('brands.id', brandId)
+    .neq('id', currentProductId)
+    .limit(limit);
+
+  if (error) {
+    console.error("Error fetching other products by brand:", error);
+    return [];
+  }
+
+  return (data as ProductFromDB[]).map((product) => {
+    const sortedPrices = product.crawl_targets
+      .filter((target) => target.price_crawls.length > 0)
+      .map((target) => {
+        const latestPriceCrawl = target.price_crawls.reduce((latest, current) =>
+          new Date(current.crawled_at) > new Date(latest.crawled_at)
+            ? current
+            : latest
+        );
+
+        return {
+          site: target.site,
+          price: roundToThousand(latestPriceCrawl.price),
+          url: target.encoded_product_url,
+          crawled_at: latestPriceCrawl.crawled_at,
+        };
+      })
+      .sort((a, b) => a.price - b.price);
+
+    const lowestPrice = sortedPrices.length > 0 ? sortedPrices[0].price : null;
+
+    return {
+      ...product,
+      brand_name_ko: product.brands.name_ko,
+      brand_name_en: product.brands.name_en,
+      product_name: product.name,
+      product_name_en: product.name_en,
+      sorted_prices: sortedPrices,
+      lowest_price: lowestPrice,
+    } as ProductWithPrices;
+  });
+}
+
 export interface PriceInfo {
   site: {
     id: string;
@@ -156,4 +221,9 @@ export interface PriceInfo {
   price: number;
   url: string;
   crawled_at: string;
+}
+
+interface ProductFromDB extends Omit<Product, 'brands' | 'crawl_targets'> {
+  brands: Brand;
+  crawl_targets: Array<CrawlTarget & { site: Site }>;
 }

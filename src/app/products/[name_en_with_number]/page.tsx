@@ -179,14 +179,18 @@ export default async function ProductDetailPage({
               <p className="text-gray-800 font-semibold">{product.name}</p>
             </div>
             <div className="flex justify-between border-b border-gray-100 py-4">
+              <h3 className="text-gray-800">컬러명</h3>
+              <p className="text-gray-800 font-semibold">
+                {product.designer_color}
+              </p>
+            </div>
+            <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">소재</h3>
               <p className="text-gray-800 font-semibold">{product.material}</p>
             </div>
             <div className="flex justify-between border-b border-gray-100 py-4">
-              <h3 className="text-gray-800">관리방법</h3>
-              <p className="text-gray-800 font-semibold">
-                {product.care_instructions}
-              </p>
+              <h3 className="text-gray-800">안감</h3>
+              <p className="text-gray-800 font-semibold">{product.lining}</p>
             </div>
             <div className="flex justify-between border-b border-gray-100 py-4">
               <h3 className="text-gray-800">제조국</h3>
@@ -195,19 +199,26 @@ export default async function ProductDetailPage({
               </p>
             </div>
             <div className="flex justify-between border-b border-gray-100 py-4">
-              <h3 className="text-gray-800">컬러명</h3>
+              <h3 className="text-gray-800">관리방법</h3>
               <p className="text-gray-800 font-semibold">
-                {product.designer_color}
+                {product.care_instructions}
               </p>
             </div>
-            <div className="flex justify-between border-b border-gray-100 py-4">
-              <h3 className="text-gray-800">안감</h3>
-              <p className="text-gray-800 font-semibold">{product.lining}</p>
-            </div>
-            <div className="flex justify-between border-b border-gray-100 py-4">
-              <h3 className="text-gray-800">제품 번호</h3>
-              <p className="text-gray-800 font-semibold">
-                {product.product_number}
+          </div>
+        </div>
+
+        <div className="w-full h-[8px] bg-gray-100" />
+
+        <div className="px-4 py-6">
+          <h2 className="text-xl font-semibold mb-4">브랜드 정보</h2>
+
+          <div>
+            <div className="justify-between py-4">
+              <h3 className="text-gray-800 font-semibold pb-4">
+                💬 {product.brands.name_ko}({product.brands.name_en})란?
+              </h3>
+              <p className="text-gray-800">
+                {product.brands.description}
               </p>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
-import ProductCard from "./ProductCard";
+import ProductCardHorizontal from "./ProductCardHorizontal";
 import { StaticImageData } from "next/image";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { getSubCategories, getProductsByCategory } from "@/lib/categories";
@@ -141,7 +141,7 @@ export function TabGroup({
                 {products
                   .filter((product) => product.sub_category_id === category.id)
                   .map((product: Product) => (
-                    <ProductCard
+                    <ProductCardHorizontal
                       key={product.id}
                       id={product.id}
                       brand_name_en={product.brand_name_en}
@@ -155,9 +155,10 @@ export function TabGroup({
                   ))}
               </div>
             )}
-            {!isLoading && products.filter((product) => product.sub_category_id === category.id).length === 0 && (
-              <div>이 카테고리에 상품이 없습니다.</div>
-            )}
+            {!isLoading &&
+              products.filter(
+                (product) => product.sub_category_id === category.id
+              ).length === 0 && <div>이 카테고리에 상품이 없습니다.</div>}
           </Tab.Panel>
         ))}
       </Tab.Panels>

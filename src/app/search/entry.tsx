@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import SearchHeader from "@/components/header/SearchHeader";
-import ProductCard from "@/components/ProductCard";
+import ProductCardHorizontal from "@/components/ProductCardHorizontal";
 import { supabase } from "@/lib/supabaseClient";
 import { Suspense } from "react";
 
@@ -84,7 +84,7 @@ function SearchContent() {
         ) : searchResults.length > 0 ? (
           <div className="space-y-4">
             {searchResults.map((product) => (
-              <ProductCard
+              <ProductCardHorizontal
                 key={product.id}
                 id={product.id}
                 brand_name_en={product.brand_name_en}
