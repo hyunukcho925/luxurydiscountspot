@@ -23,6 +23,10 @@ interface ProductFromDB {
   crawl_targets: CrawlTarget[];
 }
 
+function roundToThousand(price: number): number {
+  return Math.round(price / 1000) * 1000;
+}
+
 export async function getMainCategories() {
   const { data, error } = await supabase.from("main_categories").select("*");
 
@@ -73,18 +77,23 @@ export async function getProductsByCategory(subCategoryId: string) {
     return [];
   }
 
-  return (data as ProductFromDB[]).map((product) => ({
-    id: product.id,
-    brand_name_ko: product.brands?.name_ko,
-    brand_name_en: product.brands?.name_en,
-    product_name: product.name,
-    product_name_en: product.name_en,
-    image_url: product.image_url,
-    product_number: product.product_number, // 변경: productNumber를 product_number로 변경
-    lowest_price:
-      product.crawl_targets
-        ?.flatMap((target) => target.price_crawls.map((crawl) => crawl.price))
-        .reduce((min, price) => Math.min(min, price), Infinity) || undefined,
-    sub_category_id: subCategoryId,
-  }));
+  return (data as ProductFromDB[]).map((product) => {
+    const prices = product.crawl_targets
+      ?.flatMap((target) => target.price_crawls.map((crawl) => crawl.price))
+      .filter((price): price is number => price !== null && price !== undefined);
+    
+    const lowestPrice = prices.length > 0 ? Math.min(...prices) : undefined;
+
+    return {
+      id: product.id,
+      brand_name_ko: product.brands?.name_ko,
+      brand_name_en: product.brands?.name_en,
+      product_name: product.name,
+      product_name_en: product.name_en,
+      image_url: product.image_url,
+      product_number: product.product_number,
+      lowest_price: lowestPrice !== undefined ? roundToThousand(lowestPrice) : undefined,
+      sub_category_id: subCategoryId,
+    };
+  });
 }

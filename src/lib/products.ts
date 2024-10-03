@@ -53,6 +53,11 @@ export interface ProductWithPrices extends Product {
   lowest_price: number | null;
 }
 
+// 천 단위로 반올림하는 함수
+function roundToThousand(price: number): number {
+  return Math.round(price / 1000) * 1000;
+}
+
 export async function getProduct(
   nameEnWithNumber: string
 ): Promise<ProductWithPrices | null> {
@@ -119,7 +124,7 @@ export async function getProduct(
 
         return {
           site: target.site,
-          price: latestPriceCrawl.price,
+          price: roundToThousand(latestPriceCrawl.price), // 여기서 반올림 함수 적용
           url: target.encoded_product_url,
           crawled_at: latestPriceCrawl.crawled_at,
         };
