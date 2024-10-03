@@ -49,7 +49,7 @@ const ProductCardVertical: React.FC<ProductCardProps> = ({
           </h2>
           {lowest_price !== undefined && lowest_price !== null && (
             <p className="text-sm font-bold text-primary">
-              {lowest_price.toLocaleString()}원
+              {lowest_price.toLocaleString()}
             </p>
           )}
         </div>

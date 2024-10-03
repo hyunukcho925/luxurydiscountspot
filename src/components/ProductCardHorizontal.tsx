@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { StaticImageData } from "next/image";
+import { formatPrice } from "@/utils/numberFormat";
 
 export interface ProductCardProps {
   id: string;
@@ -10,7 +11,7 @@ export interface ProductCardProps {
   product_name: string;
   product_name_en: string;
   image_url: StaticImageData | string;
-  lowest_price?: number | null;
+  lowest_price: number | null;
   product_number: string;
 }
 
@@ -48,9 +49,7 @@ const ProductCardHorizontal: React.FC<ProductCardProps> = ({
             {product_name}
           </h2>
           {lowest_price !== undefined && lowest_price !== null && (
-            <p className="text-base font-bold text-primary">
-              {lowest_price.toLocaleString()}원
-            </p>
+            <p className="text-primary font-bold">{formatPrice(lowest_price, true)}</p>
           )}
         </div>
       </div>

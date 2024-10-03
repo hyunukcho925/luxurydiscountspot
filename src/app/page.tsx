@@ -77,7 +77,7 @@ async function getHotProducts(): Promise<Product[]> {
       product_name: product.name,
       product_name_en: product.name_en,
       image_url: product.image_url,
-      product_number: product.product_number, // 변경: productNumber를 product_number로
+      product_number: product.product_number,
       lowest_price,
     };
   });

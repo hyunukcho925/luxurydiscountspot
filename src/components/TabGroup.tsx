@@ -6,6 +6,7 @@ import ProductCardHorizontal from "./ProductCardHorizontal";
 import { StaticImageData } from "next/image";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { getSubCategories, getProductsByCategory } from "@/lib/categories";
+import { roundToThousand } from '@/utils/numberFormat';
 
 interface SubCategory {
   id: string;
@@ -15,13 +16,13 @@ interface SubCategory {
 
 interface Product {
   id: string;
-  brand_name_ko: string;
   brand_name_en: string;
+  brand_name_ko: string;
   product_name: string;
-  product_name_en: string;
+  product_name_en: string | null;
   image_url: StaticImageData | string;
   product_number: string;
-  lowest_price?: number;
+  lowest_price: number | null;
   sub_category_id: string;
 }
 
@@ -91,7 +92,11 @@ export function TabGroup({
     try {
       const updatedProducts = await getProductsByCategory(subCategoryId);
       console.log("Fetched products:", updatedProducts);
-      setProducts(updatedProducts);
+      const formattedProducts = updatedProducts.map(product => ({
+        ...product,
+        lowest_price: product.lowest_price !== undefined ? roundToThousand(Number(product.lowest_price)) : null
+      }));
+      setProducts(formattedProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
@@ -147,9 +152,9 @@ export function TabGroup({
                       brand_name_en={product.brand_name_en}
                       brand_name_ko={product.brand_name_ko}
                       product_name={product.product_name}
-                      product_name_en={product.product_name_en}
-                      image_url={product.image_url}
-                      lowest_price={product.lowest_price}
+                      product_name_en={product.product_name_en || ""}
+                      image_url={product.image_url || ""}
+                      lowest_price={product.lowest_price}  // 이 부분을 수정
                       product_number={product.product_number}
                     />
                   ))}
