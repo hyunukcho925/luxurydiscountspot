@@ -12,7 +12,7 @@ interface Product {
   product_name_en: string;
   image_url: string;
   product_number: string;
-  lowest_price?: number | null;
+  lowest_price: number | null; // Changed from 'number | null | undefined' to 'number | null'
 }
 
 interface Brand {
@@ -38,7 +38,6 @@ interface SupabaseProduct {
   crawl_targets: CrawlTarget[];
 }
 
-// 천 단위로 반올림하는 함수
 function roundToThousand(price: number): number {
   return Math.round(price / 1000) * 1000;
 }
@@ -90,10 +89,15 @@ export default function RealtimeHotProducts({
   }, [supabase]);
 
   useEffect(() => {
-    setProducts(initialProducts.map(product => ({
-      ...product,
-      lowest_price: product.lowest_price ? roundToThousand(product.lowest_price) : null
-    })));
+    setProducts(
+      initialProducts.map((product) => ({
+        ...product,
+        lowest_price:
+          product.lowest_price != null
+            ? roundToThousand(product.lowest_price)
+            : null,
+      }))
+    );
   }, [initialProducts]);
 
   async function getUpdatedProduct(id: string): Promise<Product | null> {
@@ -126,7 +130,8 @@ export default function RealtimeHotProducts({
       )
       .filter((price): price is number => price !== null);
 
-    const lowest_price = prices.length > 0 ? roundToThousand(Math.min(...prices)) : null;
+    const lowest_price =
+      prices.length > 0 ? roundToThousand(Math.min(...prices)) : null;
 
     return {
       id: supabaseProduct.id,

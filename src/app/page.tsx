@@ -15,7 +15,7 @@ interface Product {
   product_name_en: string;
   image_url: string;
   product_number: string;
-  lowest_price?: number | null;
+  lowest_price: number | null;
 }
 
 interface Brand {
@@ -36,7 +36,7 @@ interface SupabaseProduct {
   name: string;
   name_en: string;
   image_url: string;
-  product_number: string; // 변경: 옵셔널 제거
+  product_number: string;
   brands: Brand;
   crawl_targets: CrawlTarget[];
 }
